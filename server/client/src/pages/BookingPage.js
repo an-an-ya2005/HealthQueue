@@ -19,7 +19,7 @@ const BookingPage = () => {
   const getUserData = async () => {
     try {
       const res = await axios.post(
-        "/api/v1/doctor/getDoctorById",
+        `http://localhost:7000/api/v1/doctor/getDoctorById`,
         { doctorId: params.doctorId },
         {
           headers: {
@@ -39,7 +39,7 @@ const BookingPage = () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
-        "/api/v1/user/booking-availbility",
+        `http://localhost:7000/api/v1/user/booking-availbility`,
         { doctorId: params.doctorId, date, time },
         {
           headers: {
@@ -47,6 +47,7 @@ const BookingPage = () => {
           },
         }
       );
+      // console.log(res)
       dispatch(hideLoading());
       if (res.data.success) {
         setIsAvailable(true);
@@ -68,8 +69,9 @@ const BookingPage = () => {
         return alert("Date & Time Required");
       }
       dispatch(showLoading());
+      // console.log(date)
       const res = await axios.post(
-        "/api/v1/user/book-appointment",
+        `http://localhost:7000/api/v1/user/book-appointment`,
         {
           doctorId: params.doctorId,
           userId: user._id,

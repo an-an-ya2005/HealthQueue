@@ -6,56 +6,55 @@ const {
   applyDoctorController,
   getAllNotificationController,
   deleteAllNotificationController,
-  getAllDocotrsController,
-  bookeAppointmnetController,
+  getAllDoctorsController,      // Corrected typo here
+  bookAppointmentController,     // Corrected typo here
   bookingAvailabilityController,
   userAppointmentsController,
+  cancelAppointmentController,
+  deleteAppointmentController,
+  rescheduleAppointmentController,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
-//router onject
+// Router object
 const router = express.Router();
 
-//routes
-//LOGIN || POST
+// Routes
+// LOGIN || POST
 router.post("/login", loginController);
 
-//REGISTER || POST
+// REGISTER || POST
 router.post("/register", registerController);
 
-//Auth || POST
+// Auth || POST
 router.post("/getUserData", authMiddleware, authController);
 
-//APply Doctor || POST
+// Apply Doctor || POST
 router.post("/apply-doctor", authMiddleware, applyDoctorController);
 
-//Notifiaction  Doctor || POST
-router.post(
-  "/get-all-notification",
-  authMiddleware,
-  getAllNotificationController
-);
-//Notifiaction  Doctor || POST
-router.post(
-  "/delete-all-notification",
-  authMiddleware,
-  deleteAllNotificationController
-);
+// Get All Notifications || POST
+router.post("/get-all-notification", authMiddleware, getAllNotificationController);
 
-//GET ALL DOC
-router.get("/getAllDoctors", authMiddleware, getAllDocotrsController);
+// Delete All Notifications || POST
+router.post("/delete-all-notification", authMiddleware, deleteAllNotificationController);
 
-//BOOK APPOINTMENT
-router.post("/book-appointment", authMiddleware, bookeAppointmnetController);
+// Get All Doctors || GET
+router.get("/getAllDoctors", authMiddleware, getAllDoctorsController);
 
-//Booking Avliability
-router.post(
-  "/booking-availbility",
-  authMiddleware,
-  bookingAvailabilityController
-);
+// Book Appointment || POST
+router.post("/book-appointment", authMiddleware, bookAppointmentController);
 
-//Appointments List
+// Booking Availability || POST
+router.post("/booking-availability", authMiddleware, bookingAvailabilityController);
+
+// Appointments List || GET
 router.get("/user-appointments", authMiddleware, userAppointmentsController);
+
+router.post("/cancel-appointment", authMiddleware, cancelAppointmentController);
+
+router.delete("/delete-appointment", authMiddleware, deleteAppointmentController);
+router.delete("/reschedule-appointment", authMiddleware, rescheduleAppointmentController);
+
+
 
 module.exports = router;

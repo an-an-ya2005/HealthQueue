@@ -9,6 +9,8 @@ const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // console.log(location)
   // logout funtion
   const handleLogout = () => {
     localStorage.clear();
@@ -53,18 +55,16 @@ const Layout = ({ children }) => {
               <hr />
             </div>
             <div className="menu">
-              {SidebarMenu.map((menu) => {
+              {SidebarMenu.map((menu, index) => {
                 const isActive = location.pathname === menu.path;
                 return (
-                  <>
-                    <div className={`menu-item ${isActive && "active"}`}>
-                      <i className={menu.icon}></i>
-                      <Link to={menu.path}>{menu.name}</Link>
-                    </div>
-                  </>
+                  <div key={index} className={`menu-item ${isActive && "active"}`}>
+                    <i className={menu.icon}></i>
+                    <Link to={menu.path}>{menu.name}</Link>
+                  </div>
                 );
               })}
-              <div className={`menu-item `} onClick={handleLogout}>
+              <div className="menu-item" onClick={handleLogout}>
                 <i className="fa-solid fa-right-from-bracket"></i>
                 <Link to="/login">Logout</Link>
               </div>
@@ -94,3 +94,21 @@ const Layout = ({ children }) => {
 };
 
 export default Layout;
+
+{/* <div className="menu">
+              {SidebarMenu.map((menu) => {
+                const isActive = location.pathname === menu.path;
+                return (
+                  <>
+                    <div className={`menu-item ${isActive && "active"}`}>
+                      <i className={menu.icon}></i>
+                      <Link to={menu.path}>{menu.name}</Link>
+                    </div>
+                  </>
+                );
+              })}
+              <div className={`menu-item `} onClick={handleLogout}>
+                <i className="fa-solid fa-right-from-bracket"></i>
+                <Link to="/login">Logout</Link>
+              </div>
+            </div> */}

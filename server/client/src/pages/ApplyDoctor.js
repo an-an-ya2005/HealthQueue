@@ -16,7 +16,7 @@ const ApplyDoctor = () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
-        "/api/v1/user/apply-doctor",
+        `http://localhost:7000/api/v1/user/apply-doctor`,
         {
           ...values,
           userId: user._id,
@@ -31,9 +31,11 @@ const ApplyDoctor = () => {
           },
         }
       );
+      console.log('DB data',values)
       dispatch(hideLoading());
       if (res.data.success) {
         message.success(res.data.message);
+        console.log('data',res.data)
         navigate("/");
       } else {
         message.error(res.data.message);

@@ -25,7 +25,7 @@ const Doctors = () => {
   const handleAccountStatus = async (record, status) => {
     try {
       const res = await axios.post(
-        "/api/v1/admin/changeAccountStatus",
+        "http://localhost:7000/api/v1/admin/changeAccountStatus",
         { doctorId: record._id, userId: record.userId, status: status },
         {
           headers: {
