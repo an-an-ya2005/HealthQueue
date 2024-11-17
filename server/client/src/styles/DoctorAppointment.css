@@ -1,0 +1,104 @@
+/* Layout and Title Styling */
+.appointments-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+  
+  /* Container for the entire appointments page */
+  .appointments-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ensure full screen height */
+    padding: 20px;
+    overflow: hidden; /* Prevent overflow outside the container */
+  }
+  
+  /* Table container to make the table scrollable */
+  .appointments-table-container {
+    flex-grow: 1; /* Allow this container to take available space */
+    overflow-y: auto; /* Enable vertical scroll for long lists */
+    max-height: calc(100vh - 100px); /* Adjust height to fit within screen */
+  }
+  
+  /* Table Styling */
+  .appointments-table {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ensure table fits the container */
+    min-width: 800px; /* Minimum width for better readability */
+  }
+  
+  /* Header Styling */
+  .appointments-table .ant-table-thead > tr > th {
+    background-color: #f0f2f5;
+    color: #595959;
+    font-weight: bold;
+  }
+  
+  /* Row Hover Styling */
+  .appointments-table .ant-table-tbody > tr:hover {
+    background-color: #fafafa;
+  }
+  
+  /* Styling for Action Buttons */
+  .appointment-actions {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .action-buttons button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Success (Approve) Button */
+  .btn-success {
+    background-color: #52c41a;
+    color: white;
+    border: none;
+  }
+  
+  .btn-success:hover {
+    background-color: #4CAF50;
+  }
+  
+  /* Danger (Reject) Button */
+  .btn-danger {
+    background-color: #f5222d;
+    color: white;
+    border: none;
+  }
+  
+  .btn-danger:hover {
+    background-color: #FF4D4F;
+  }
+  
+  /* Add margin between action buttons */
+  .action-buttons button + button {
+    margin-left: 10px;
+  }
+  
+  /* Styling for Status Column */
+  .ant-table-cell-status {
+    font-weight: bold;
+    color: #1890ff;
+  }
+  
+  .ant-table-cell-status.pending {
+    color: #f5222d;
+  }
+  
+  .ant-table-cell-status.approved {
+    color: #52c41a;
+  }
+  
+  .ant-table-cell-status.rejected {
+    color: #ff4d4f;
+  }
+  

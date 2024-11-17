@@ -28,6 +28,40 @@ const registerController = async (req, res) => {
   }
 };
 
+// CheckLoggedInDoctor
+const checkDoctorLoginStatusController = async (req, res) => {
+  try {
+    const userId = req.body.userId; // Get userId from the request body
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "User  not found", success: false });
+    }
+
+    if (!user.isDoctor) {
+      return res.status(403).send({ message: "Access Denied: Not a Doctor", success: false });
+    }
+
+    // If the user is a doctor, respond with success
+    res.status(200).send({
+      success: true,
+      message: "Doctor is logged in",
+      data: {
+        name: user.name,
+        email: user.email,
+        isDoctor: user.isDoctor,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error checking doctor login status",
+      error: error.message,
+    });
+  }
+};
+
 // Login Controller
 const loginController = async (req, res) => {
   // console.log(req.body);
@@ -60,6 +94,7 @@ const loginController = async (req, res) => {
 const authController = async (req, res) => {
   try {
     const user = await userModel.findById(req.body.userId);
+    // console.log(user)
     if (!user) {
       return res.status(200).send({ message: "User Not Found", success: false });
     }
@@ -423,5 +458,6 @@ module.exports = {
   userAppointmentsController,
   cancelAppointmentController,
   deleteAppointmentController,
-  rescheduleAppointmentController
+  rescheduleAppointmentController,
+  checkDoctorLoginStatusController
 };

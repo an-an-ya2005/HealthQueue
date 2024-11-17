@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { DatePicker, message, TimePicker } from "antd";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
+
+import "../styles/BookingPage.css";
 
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
@@ -15,6 +17,8 @@ const BookingPage = () => {
   const [time, setTime] = useState();
   const [isAvailable, setIsAvailable] = useState(false);
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
   // login user data
   const getUserData = async () => {
     try {
@@ -89,8 +93,9 @@ const BookingPage = () => {
       console.log(res.data)
       dispatch(hideLoading());
       if (res.data.success) {
-        console.log(res.data)
+        // console.log(res.data)
         message.success(res.data.message);
+        navigate('/appointments')
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -104,52 +109,60 @@ const BookingPage = () => {
   }, []);
   return (
     <Layout>
-      <h3>Booking Page</h3>
-      <div className="container m-2">
-        {doctors && (
-          <div>
-            <h4>
-              Dr.{doctors.firstName} {doctors.lastName}
-            </h4>
-            <h4>Fees : {doctors.feesPerCunsaltation}</h4>
-            <h4>
-              Timings : {doctors.timings && doctors.timings[0]} -{" "}
-              {doctors.timings && doctors.timings[1]}{" "}
-            </h4>
-            <div className="d-flex flex-column w-50">
-              <DatePicker
-                aria-required={"true"}
-                className="m-2"
-                format="DD-MM-YYYY"
-                onChange={(value) => {
-                  setDate(moment(value).format("DD-MM-YYYY"));
-                }}
-              />
-              <TimePicker
-                aria-required={"true"}
-                format="HH:mm"
-                className="mt-3"
-                onChange={(value) => {
-                  setTime(moment(value).format("HH:mm"));
-                }}
-              />
+        <div className="page-wrapper">
+        <div className="container">
+          <h3>Booking Page</h3>
+          <div className="m-2">
+            {doctors && (
+              <div>
+                <h4>
+                  Dr.{doctors.firstName} {doctors.lastName}
+                </h4>
+                <h4>Fees : {doctors.feesPerCunsaltation}</h4>
+                <h4>
+                  Timings : {doctors.timings && doctors.timings[0]} -{" "}
+                  {doctors.timings && doctors.timings[1]}
+                </h4>
+                <div /*  className="d-flex flex-column w-50" */>
+                <div /* className="d-flex flex-column align-items-center w-100" */ style={{justifyContent:'center'}}>
+                    <DatePicker
+                      aria-required="true"
+                      className="picker m-2"
+                      format="DD-MM-YYYY"
+                      onChange={(value) => {
+                        setDate(moment(value).format("DD-MM-YYYY"));
+                      }}
+                    />
+                    <TimePicker
+                      aria-required="true"
+                      format="HH:mm"
+                      className="picker mt-3"
+                      onChange={(value) => {
+                        setTime(moment(value).format("HH:mm"));
+                      }}
+                    />
+                  </div>
 
-              <button
-                className="btn btn-primary mt-2"
-                onClick={handleAvailability}
-              >
-                Check Availability
-              </button>
-
-              <button className="btn btn-dark mt-2" onClick={handleBooking}>
-                Book Now
-              </button>
-            </div>
+                  <button
+                    className="btn btn-primary mt-2"
+                    onClick={handleAvailability}
+                  >
+                    Check Availability
+                  </button>
+                  <button
+                    className="btn btn-dark mt-2"
+                    onClick={handleBooking}
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </Layout>
+        </div>
+    </div>
+      </Layout>
   );
-};
+};  
 
 export default BookingPage;

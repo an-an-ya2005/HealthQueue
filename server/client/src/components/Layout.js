@@ -1,24 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/LayoutStyles.css";
 import { adminMenu, userMenu } from "./../Data/data";
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Badge, message } from "antd";
+import { Badge, message, Modal } from "antd";
+
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // console.log(location)
-  // logout funtion
+  const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+
+  // Show logout confirmation modal
+  const showLogoutModal = () => {
+    setIsLogoutModalVisible(true);
+  };
+
+  // Handle logout
   const handleLogout = () => {
     localStorage.clear();
     message.success("Logout Successfully");
     navigate("/login");
+    setIsLogoutModalVisible(false);
   };
 
-  // =========== doctor menu ===============
+  // Handle cancel logout
+  const handleCancel = () => {
+    setIsLogoutModalVisible(false);
+  };
+
+  // Doctor menu
   const doctorMenu = [
     {
       name: "Home",
@@ -30,85 +42,90 @@ const Layout = ({ children }) => {
       path: "/doctor-appointments",
       icon: "fa-solid fa-list",
     },
-
     {
       name: "Profile",
       path: `/doctor/profile/${user?._id}`,
       icon: "fa-solid fa-user",
     },
   ];
-  // =========== doctor menu ===============
 
-  // redering menu list
+  // Rendering menu list
   const SidebarMenu = user?.isAdmin
     ? adminMenu
     : user?.isDoctor
     ? doctorMenu
     : userMenu;
+
   return (
     <>
       <div className="main">
-        <div className="layout">
-          <div className="sidebar">
-            <div className="logo">
-              <h6 className="text-light">DOC APP</h6>
-              <hr />
-            </div>
-            <div className="menu">
-              {SidebarMenu.map((menu, index) => {
-                const isActive = location.pathname === menu.path;
-                return (
-                  <div key={index} className={`menu-item ${isActive && "active"}`}>
+        <nav className="navbar">
+          <div className="logo">
+            <h6 className="text-light">HealthCare</h6>
+          </div>
+          <ul className="menu">
+            {SidebarMenu.map((menu, index) => {
+              const isActive = location.pathname === menu.path;
+              return (
+                <li key={index} className={`menu-item ${isActive && "active"}`}>
+                  <Link to={menu.path}>
                     <i className={menu.icon}></i>
-                    <Link to={menu.path}>{menu.name}</Link>
-                  </div>
-                );
-              })}
-              <div className="menu-item" onClick={handleLogout}>
+                    {menu.name}
+                  </Link>
+                </li>
+              );
+            })}
+            <li className="menu-item" onClick={showLogoutModal}>
+              <a>
                 <i className="fa-solid fa-right-from-bracket"></i>
-                <Link to="/login">Logout</Link>
-              </div>
-            </div>
-          </div>
-          <div className="content">
-            <div className="header">
-              <div className="header-content" style={{ cursor: "pointer" }}>
-                <Badge
-                  count={user && user.notifcation.length}
-                  onClick={() => {
-                    navigate("/notification");
-                  }}
-                >
-                  <i className="fa-solid fa-bell"></i>
-                </Badge>
+                Logout
+              </a>
+            </li>
 
+          </ul>
+          <div className="header-content">
+            <Badge
+              count={user && user.notifcation.length}
+              onClick={() => {
+                navigate("/notification");
+              }}
+              className="notification-icon"
+            >
+              <i className="fa-solid fa-bell"></i>
+            </Badge>
+            <li className="profile-menu">
+              
                 <Link to="/profile">{user?.name}</Link>
-              </div>
-            </div>
-            <div className="body">{children}</div>
+              
+            </li>
           </div>
+        </nav>
+        <div className="content">
+          <div className="body">{children}</div>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        title="Confirm Logout"
+        visible={isLogoutModalVisible}
+        onOk={handleLogout}
+        onCancel={handleCancel}
+        centered
+        okText="Yes, Logout"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to logout?</p>
+      </Modal>
+      {/* Floating Search Bar */}
+  {/* <div className="search-bar">
+    <input type="text" placeholder="Search..." />
+    <button className="search-button">
+      <i className="fa-solid fa-search"></i>
+    </button>
+  </div> */}
     </>
   );
 };
 
 export default Layout;
-
-{/* <div className="menu">
-              {SidebarMenu.map((menu) => {
-                const isActive = location.pathname === menu.path;
-                return (
-                  <>
-                    <div className={`menu-item ${isActive && "active"}`}>
-                      <i className={menu.icon}></i>
-                      <Link to={menu.path}>{menu.name}</Link>
-                    </div>
-                  </>
-                );
-              })}
-              <div className={`menu-item `} onClick={handleLogout}>
-                <i className="fa-solid fa-right-from-bracket"></i>
-                <Link to="/login">Logout</Link>
-              </div>
-            </div> */}

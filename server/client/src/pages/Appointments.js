@@ -283,6 +283,7 @@ const Appointments = () => {
 
   return (
     <Layout>
+      <div style={{ height: 'calc(100vh - 100px)' }}>
       <h1>Appointments List</h1>
       <Table columns={columns} dataSource={appointments} />
 
@@ -310,6 +311,7 @@ const Appointments = () => {
           />
         </div>
       </Modal>
+      </div>
     </Layout>
   );
 };

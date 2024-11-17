@@ -1,83 +1,227 @@
+/* Main container */
 .main {
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
 }
-.layout {
+
+/* Navbar styles */
+.navbar {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c3e50; /* Darker shade for the navbar */
+  padding: 15px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
-.sidebar {
-  min-height: 100%;
-  width: 300px;
-  border-radius: 5px;
-  background-color: rgba(2, 51, 210, 0.774);
-  box-shadow: 0 0 2px gray;
-  margin-right: 20px;
-  color: white;
-}
-
-.content {
-  width: 100%;
-  height: 100%;
-}
-
-.header {
-  height: 10vh;
-  margin-bottom: 20px;
-  box-shadow: 0 0 2px gray;
-  background-color: white;
-}
-.body {
-  height: 85vh;
-  margin-bottom: 20px;
-  box-shadow: 0 0 2px gray;
-  background-color: white;
-}
+/* Logo styles */
 .logo h6 {
-  font-size: 1.5rem;
-  text-align: center;
-  margin: 20px 0px;
-}
-.menu {
-  margin-top: 50px;
-}
-.menu-item {
-  margin-top: 30px;
-}
-.menu-item a {
-  color: white;
-  text-decoration: none;
-  font-size: 1.2rem;
-}
-.menu-item i {
-  font-size: 1.2rem;
-  margin: 0 15px;
-}
-.active {
-  background-color: white;
-  padding: 10px;
-}
-.active a,
-.active i {
-  color: rgb(51, 1, 1);
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ecf0f1; /* Light color for contrast */
 }
 
+/* Menu styles */
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 20px; /* Increased spacing between menu items */
+}
+
+/* Menu item styles */
+.menu-item {
+  position: relative;
+  color: #ffff;
+}
+
+.menu-item a {
+  color: #ecf0f1; /* Light color for menu items */
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.2s; /* Smooth transitions */
+}
+
+/* Profile menu styles */
+.profile-menu {
+  color: #ecf0f1; /* Light color for profile menu */
+  font-weight: bold; /* Bold text for emphasis */
+  padding: 10px 20px; /* Added extra padding for better spacing */
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s; /* Smooth transitions */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Spacing between the icon and name */
+  cursor: pointer; /* Add cursor pointer for interactivity */
+}
+
+/* Profile menu link styles */
+.profile-menu a {
+  color: #ecf0f1; /* Light color for profile link */
+  text-decoration: none; /* Remove underline */
+  font-size: 16px;
+  display: flex;
+  align-items: center; /* Center content vertically */
+  gap: 8px; /* Space between the icon and text */
+}
+
+/* Profile menu icon styling */
+.profile-menu i {
+  font-size: 18px; /* Adjust the size of the icon */
+}
+
+/* Hover effect for profile menu */
+.profile-menu:hover {
+  border-radius: 50%;
+  background-color: #34495e; /* Darker background on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Profile menu active state */
+.profile-menu.active {
+  background-color: #2980b9; /* Highlight active profile menu */
+}
+
+/* Profile menu text */
+.profile-menu a:hover {
+  color: #fff; /* Change text color on hover */
+}
+
+/* Ensure profile menu is aligned properly */
+.header-content .profile-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* Spacing between icon and text */
+.menu-item a i {
+  margin-right: 8px; /* Add space between icon and text */
+}
+
+/* Hover effect for menu items */
+.menu-item a:hover {
+  background-color: #34495e; /* Slightly lighter on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Active menu item */
+.menu-item.active a {
+  background-color: #2980b9; /* Highlight active menu item */
+  color: white; /* Ensure text is readable */
+}
+
+/* Header content styles */
 .header-content {
   display: flex;
   align-items: center;
-  height: 50px;
-  justify-content: flex-end;
-  margin: 0 15px;
+  gap: 15px;
 }
 
-.header-content i {
-  margin-right: 20px;
-  font-size: 1.2rem;
-}
+/* Header content links */
 .header-content a {
+  color: #ecf0f1; /* Light color for profile link */
   text-decoration: none;
-  font-size: 1.2rem;
-  color: blue;
-  margin: 0 10px;
-  text-transform: uppercase;
+  font-weight: bold; /* Bold for emphasis */
+}
+
+/* Notification icon styles */
+.header-content .ant-badge {
+  cursor: pointer; /* Pointer cursor for interactivity */
+}
+
+/* Body styles */
+.body {
+  flex: 1;
+  padding: 20px;
+  border-radius: 50;
+  background-color: #ecf0f1; /* Light background for content area */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column; /* Stack items on smaller screens */
+    align-items: flex-start; /* Align items to the start */
+  }
+
+  .menu {
+    flex-direction: column; /* Stack menu items vertically */
+    gap: 10px; /* Adjust spacing for vertical layout */
+    width: 100%; /* Full width for mobile */
+  }
+
+  .menu-item a {
+    width: 100%; /* Full width for better touch targets */
+    text-align: center; /* Center text in mobile view */
+  }
+}
+
+.notification-icon {
+  position: fixed; /* Fixes the position relative to the viewport */
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px; /* Distance from the right */
+  width: 50px; /* Width of the icon */
+  height: 50px; /* Height of the icon */
+  background-color: #ff4757; /* Background color for visibility */
+  color: white; /* Icon color */
+  border-radius: 50%; /* Circular shape */
+  display: flex; /* Center the icon */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  cursor: pointer; /* Pointer cursor on hover */
+  z-index: 1000; /* Ensure it appears above other elements */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.notification-icon:hover {
+  background-color: #ff6b81; /* Change color on hover */
+}
+
+/* Floating Search Bar at the Bottom Center */
+.search-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 5px 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  padding: 8px 15px;
+  font-size: 18px;
+  border-radius: 50px;
+  width: 300px;  /* You can adjust the width of the input */
+}
+
+.search-bar button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.search-bar button i {
+  color: #007bff;
+  font-size: 16px;
+}
+
+.search-bar input::placeholder {
+  color: #aaa;
 }

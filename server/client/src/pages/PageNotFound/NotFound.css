@@ -1,6 +1,6 @@
 .not-found-container {
   display: flex;
-  justify-content: center; /* Center align the items */
+  justify-content: center; /* Center align the items horizontally */
   align-items: center; /* Center align items vertically */
   height: 100vh;
   background: linear-gradient(135deg, #ff9a9e, #fad0c4);
@@ -10,15 +10,15 @@
 }
 
 .text-container {
-  flex: 1; /* Allow text to take available space */
-  margin-right: 0; /* Ensure no margin on the right */
+  text-align: center; /* Ensure the text is centered */
+  margin-right: 20px; /* Add some spacing between the text and the image */
 }
 
 .doctor-image {
-  width: 250px; /* Set a width for the image */
-  height: auto; /* Maintain aspect ratio */
-  margin-left: -10px; /* Optional: Use negative margin to pull the image closer */
+  width: auto; /* Set a width for the image */
+  height: 350px; /* Maintain aspect ratio */
   flex-shrink: 0; /* Prevent image from shrinking */
+  margin-left: 10px; /* Add margin to space out from the text */
 }
 
 .not-found-title {
@@ -30,7 +30,7 @@
 }
 
 .not-found-message {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   margin: 20px 0;
   color: #ffffff;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
@@ -40,7 +40,7 @@
   display: inline-block;
   margin-top: 20px;
   padding: 15px 30px;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #ffffff;
   background-color: #ff6f61;
   border-radius: 30px;
@@ -51,6 +51,7 @@
 
 .home-link:hover {
   background-color: #ff9a9e;
+  color: #ffffff;
   transform: scale(1.1);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
 }

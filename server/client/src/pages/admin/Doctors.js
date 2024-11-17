@@ -78,7 +78,7 @@ const Doctors = () => {
             </button>
           ) : (
             <button className="btn btn-danger"
-            // onClick={() => handleAccountStatus(record, "rejected")}
+            // onClick={() => handleAccountStatus(record, "")}
             >Reject</button>
           )}
         </div>
@@ -88,8 +88,10 @@ const Doctors = () => {
 
   return (
     <Layout>
-      <h1 className="text-center m-3">All Doctors</h1>
-      <Table columns={columns} dataSource={doctors} />
+      <div style={{ height: 'calc(100vh - 100px)', justifyContent:'center' }}>
+        <h1 className="text-center m-3">All Doctors</h1>
+        <Table columns={columns} dataSource={doctors} />
+      </div>
     </Layout>
   );
 };

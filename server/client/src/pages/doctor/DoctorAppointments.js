@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./../../components/Layout";
-
 import axios from "axios";
-
 import moment from "moment";
 import { message, Table } from "antd";
+import "../../styles/DoctorAppointment.css"; // Import the CSS file
+
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
-  // console.log(appointments)
 
   const getAppointments = async () => {
     try {
@@ -73,9 +72,9 @@ const DoctorAppointments = () => {
       title: "Actions",
       dataIndex: "actions",
       render: (text, record) => (
-        <div className="d-flex">
+        <div className="appointment-actions">
           {record.status === "pending" && (
-            <div className="d-flex">
+            <div className="action-buttons">
               <button
                 className="btn btn-success"
                 onClick={() => handleStatus(record, "approved")}
@@ -94,10 +93,20 @@ const DoctorAppointments = () => {
       ),
     },
   ];
+
   return (
     <Layout>
-      <h1>Appoinmtnets Lists</h1>
-      <Table columns={columns} dataSource={appointments} />
+      <div className="appointments-page">
+        {/* <h1 className="appointments-title">Appointments Lists</h1> */}
+        <div className="appointments-table-container">
+          <Table
+            columns={columns}
+            dataSource={appointments}
+            className="appointments-table"
+            scroll={{ x: true }} // Enable horizontal scrolling for the table
+          />
+        </div>
+      </div>
     </Layout>
   );
 };

@@ -53,8 +53,10 @@ const Users = () => {
 
   return (
     <Layout>
-      <h1 className="text-center m-2">Users List</h1>
-      <Table columns={columns} dataSource={users} />
+      <div style={{ height: 'calc(100vh - 100px)', justifyContent:'center' }}>
+        <h1 className="text-center m-2">Users List</h1>
+        <Table columns={columns} dataSource={users} />
+      </div>
     </Layout>
   );
 };

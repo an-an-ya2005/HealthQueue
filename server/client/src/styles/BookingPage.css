@@ -1,0 +1,135 @@
+/* Full Page Wrapper */
+.page-wrapper {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically */
+    height: calc(100vh - 100px); /* Dynamic height minus header/footer space */
+    background-color: #f4f7f9; /* Subtle background color */
+  }
+  
+  /* Booking Page Container */
+  .container {
+    max-width: 600px; /* Adjust width for smaller content */
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+  }
+  
+  /* Title */
+  .container h3 {
+    font-size: 1.8rem;
+    color: #444;
+    margin-bottom: 20px;
+  }
+  
+  /* Doctor Information */
+  .container h4 {
+    color: #555;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  /* Buttons */
+  .container button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  /* Primary Button Style */
+  .container .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .container .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Dark Button Style */
+  .container .btn-dark {
+    background-color: #343a40;
+    color: #fff;
+  }
+  
+  .container .btn-dark:hover {
+    background-color: #1d2124;
+  }
+  
+  /* Styling for DatePicker and TimePicker */
+  .picker {
+    width: 80%; /* Adjust width to fit the layout */
+    max-width: 300px; /* Optional: Limit the maximum width */
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+  }
+  
+  .picker:hover,
+  .picker-focused {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* Wrapper to center all elements */
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px; /* Set a max width for content */
+    margin: 0 auto;
+    padding: 30px;
+  }
+  
+  /* Container for DatePicker and TimePicker */
+  .picker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  /* Button styling */
+  .btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+    max-width: 300px; /* Button max width */
+    margin-top: 15px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px;
+      margin: 20px;
+    }
+  
+    .container h3 {
+      font-size: 1.5rem;
+    }
+  
+    .container h4 {
+      font-size: 1rem;
+    }
+  
+    .container button {
+      font-size: 0.9rem;
+    }
+  }
+  

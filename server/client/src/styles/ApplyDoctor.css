@@ -1,0 +1,90 @@
+/* Layout and Form Container */
+.ant-layout {
+    background-color: #f4f7fc;
+    padding: 30px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: #4b7bec;
+    margin-bottom: 20px;
+  }
+  
+  h4 {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 30px;
+    margin-bottom: 15px;
+  }
+  
+  /* Form Styles */
+  .ant-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
+  
+  /* Input Fields */
+  .ant-input {
+    border-radius: 5px;
+    border: 1px solid #dcdfe6;
+    padding: 10px;
+    transition: border-color 0.3s;
+  }
+  
+  .ant-input:focus {
+    border-color: #4b7bec;
+    outline: none;
+  }
+  
+  /* Time Picker */
+  .ant-picker-range {
+    border-radius: 5px;
+    border: 1px solid #dcdfe6;
+  }
+  
+  .ant-picker-range:focus {
+    border-color: #4b7bec;
+    outline: none;
+  }
+  
+  /* Submit Button */
+  button[type="submit"] {
+    background-color: #4b7bec;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #3558d8;
+  }
+  
+  /* Column Layout */
+  .ant-row {
+    margin-bottom: 20px;
+  }
+  
+  /* Input Labels */
+  .ant-form-item-label {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Ant Design Responsive Layout */
+  @media (max-width: 768px) {
+    .ant-col-xs-24 {
+      margin-bottom: 15px;
+    }
+  }
+  

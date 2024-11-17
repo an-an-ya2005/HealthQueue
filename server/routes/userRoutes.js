@@ -13,6 +13,7 @@ const {
   cancelAppointmentController,
   deleteAppointmentController,
   rescheduleAppointmentController,
+  checkDoctorLoginStatusController,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -28,6 +29,9 @@ router.post("/register", registerController);
 
 // Auth || POST
 router.post("/getUserData", authMiddleware, authController);
+
+//Check login statues
+router.get("/checkLoginStatus", authMiddleware, checkDoctorLoginStatusController);
 
 // Apply Doctor || POST
 router.post("/apply-doctor", authMiddleware, applyDoctorController);
