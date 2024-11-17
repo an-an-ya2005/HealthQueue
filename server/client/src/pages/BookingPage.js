@@ -19,6 +19,7 @@ const BookingPage = () => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  
   // login user data
   const getUserData = async () => {
     try {
@@ -38,8 +39,26 @@ const BookingPage = () => {
       console.log(error);
     }
   };
-  // ============ handle availiblity
+
+  // ============ validate if time is within doctor's available range
+  const isValidTime = (selectedTime) => {
+    if (!doctors.timings) return false;
+
+    const [startTime, endTime] = doctors.timings;
+    const selectedTimeMoment = moment(selectedTime, "HH:mm");
+    const startTimeMoment = moment(startTime, "HH:mm");
+    const endTimeMoment = moment(endTime, "HH:mm");
+
+    return selectedTimeMoment.isBetween(startTimeMoment, endTimeMoment, null, "[)");
+  };
+
+  // ============ handle availability
   const handleAvailability = async () => {
+    if (!isValidTime(time)) {
+      message.error("The selected time is outside the doctor's available hours.");
+      return;
+    }
+
     try {
       dispatch(showLoading());
       const res = await axios.post(
@@ -51,11 +70,9 @@ const BookingPage = () => {
           },
         }
       );
-      // console.log(res)
       dispatch(hideLoading());
       if (res.data.success) {
         setIsAvailable(true);
-        console.log(isAvailable);
         message.success(res.data.message);
       } else {
         message.error(res.data.message);
@@ -65,15 +82,20 @@ const BookingPage = () => {
       console.log(error);
     }
   };
+
   // =============== booking func
   const handleBooking = async () => {
+    if (!date || !time) {
+      return alert("Date & Time are required.");
+    }
+
+    if (!isValidTime(time)) {
+      message.error("The selected time is outside the doctor's available hours.");
+      return;
+    }
+
     try {
-      setIsAvailable(true);
-      if (!date && !time) {
-        return alert("Date & Time Required");
-      }
       dispatch(showLoading());
-      // console.log(date)
       const res = await axios.post(
         `http://localhost:7000/api/v1/user/book-appointment`,
         {
@@ -90,12 +112,10 @@ const BookingPage = () => {
           },
         }
       );
-      console.log(res.data)
       dispatch(hideLoading());
       if (res.data.success) {
-        // console.log(res.data)
         message.success(res.data.message);
-        navigate('/appointments')
+        navigate('/appointments');
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -107,9 +127,15 @@ const BookingPage = () => {
     getUserData();
     //eslint-disable-next-line
   }, []);
+
+  // console.log(doctors.feesPerCunsaltation)
+  // console.log(doctors.
+    // feesPerConsultation
+    // )
+
   return (
     <Layout>
-        <div className="page-wrapper">
+      <div className="page-wrapper">
         <div className="container">
           <h3>Booking Page</h3>
           <div className="m-2">
@@ -118,51 +144,49 @@ const BookingPage = () => {
                 <h4>
                   Dr.{doctors.firstName} {doctors.lastName}
                 </h4>
-                <h4>Fees : {doctors.feesPerCunsaltation}</h4>
+                <h4>Fees: {doctors.feesPerConsultation}/-</h4>
                 <h4>
-                  Timings : {doctors.timings && doctors.timings[0]} -{" "}
+                  Timings: {doctors.timings && doctors.timings[0]} -{" "}
                   {doctors.timings && doctors.timings[1]}
                 </h4>
-                <div /*  className="d-flex flex-column w-50" */>
-                <div /* className="d-flex flex-column align-items-center w-100" */ style={{justifyContent:'center'}}>
-                    <DatePicker
-                      aria-required="true"
-                      className="picker m-2"
-                      format="DD-MM-YYYY"
-                      onChange={(value) => {
-                        setDate(moment(value).format("DD-MM-YYYY"));
-                      }}
-                    />
-                    <TimePicker
-                      aria-required="true"
-                      format="HH:mm"
-                      className="picker mt-3"
-                      onChange={(value) => {
-                        setTime(moment(value).format("HH:mm"));
-                      }}
-                    />
-                  </div>
-
-                  <button
-                    className="btn btn-primary mt-2"
-                    onClick={handleAvailability}
-                  >
-                    Check Availability
-                  </button>
-                  <button
-                    className="btn btn-dark mt-2"
-                    onClick={handleBooking}
-                  >
-                    Book Now
-                  </button>
+                <div style={{ justifyContent: 'center' }}>
+                  <DatePicker
+                    aria-required="true"
+                    className="picker m-2"
+                    format="DD-MM-YYYY"
+                    onChange={(value) => {
+                      setDate(moment(value).format("DD-MM-YYYY"));
+                    }}
+                  />
+                  <TimePicker
+                    aria-required="true"
+                    format="HH:mm"
+                    className="picker mt-3"
+                    onChange={(value) => {
+                      setTime(moment(value).format("HH:mm"));
+                    }}
+                  />
                 </div>
+
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={handleAvailability}
+                >
+                  Check Availability
+                </button>
+                <button
+                  className="btn btn-dark mt-2"
+                  onClick={handleBooking}
+                >
+                  Book Now
+                </button>
               </div>
             )}
           </div>
         </div>
-    </div>
-      </Layout>
+      </div>
+    </Layout>
   );
-};  
+};
 
 export default BookingPage;

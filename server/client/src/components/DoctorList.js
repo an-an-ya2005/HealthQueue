@@ -17,6 +17,8 @@ const DoctorList = ({ doctor, email }) => {
     navigate(`/doctor/book-appointment/${doctor._id}`);
   };
 
+  console.log(doctor.feesPerConsultation)
+
   return (
     <div style={{justifyContent:'center'}}>
     <Tooltip 
@@ -73,7 +75,7 @@ const DoctorList = ({ doctor, email }) => {
             <b>Experience:</b> {doctor.experience} years
           </p>
           <p>
-            <b>Fees Per Consultation:</b> ${doctor.feesPerCunsaltation}
+            <b>Fees Per Consultation:</b> ${doctor.feesPerConsultation}
           </p>
           <p>
             <b>Timings:</b> {doctor.timings[0]} - {doctor.timings[1]}

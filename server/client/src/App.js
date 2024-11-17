@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import DoctorPage from "./pages/DoctorPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import BookingPage from "./pages/BookingPage";
 import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import NotFound from "./pages/PageNotFound/NotFound";
+import HomePage from "./pages/HomePage";
 function App() {
   const { loading } = useSelector((state) => state.alerts);
   return (
@@ -109,6 +110,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DoctorAppointments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/allDoctor"
+              element={
+                <ProtectedRoute>
+                  <DoctorPage />
                 </ProtectedRoute>
               }
             />

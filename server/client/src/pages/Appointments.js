@@ -3,7 +3,7 @@ import axios from "axios";
 import Layout from "./../components/Layout";
 import moment from "moment";
 import { message, Table, Modal, TimePicker, Input } from "antd";
-import '../styles/Appointments.css';
+import "../styles/Appointments.css";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -16,7 +16,7 @@ const Appointments = () => {
   const getAppointments = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:7000/api/v1/user/user-appointments`,
+        "http://localhost:7000/api/v1/user/user-appointments",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -40,7 +40,7 @@ const Appointments = () => {
   const handleCancel = async (appointmentId) => {
     try {
       const res = await axios.post(
-        `http://localhost:7000/api/v1/user/cancel-appointment`,
+        "http://localhost:7000/api/v1/user/cancel-appointment",
         { appointmentId },
         {
           headers: {
@@ -61,7 +61,7 @@ const Appointments = () => {
   const handleDelete = async (appointmentId) => {
     try {
       const res = await axios.delete(
-        `http://localhost:7000/api/v1/user/delete-appointment`,
+        "http://localhost:7000/api/v1/user/delete-appointment",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -78,11 +78,30 @@ const Appointments = () => {
     }
   };
 
+  // Check doctor availability
+  const checkDoctorAvailability = async (doctorId, date, time) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:7000/api/v1/user/booking-availability",
+        { doctorId, date, time },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      return res.data.success; // Returns true if available, false otherwise
+    } catch (error) {
+      console.error("Error checking doctor availability:", error);
+      return false;
+    }
+  };
+
   // Handle rescheduling of appointment
   const handleReschedule = (appointmentId) => {
     const appointment = appointments.find((appt) => appt._id === appointmentId);
     setSelectedAppointment(appointment);
-    setNewDate(moment(appointment.date).format("DD-MM-YYYY"));
+    setNewDate(moment(appointment.date).format("YYYY-MM-DD")); // Input requires YYYY-MM-DD format
     setNewTime(moment(appointment.time, "HH:mm"));
     setIsModalVisible(true);
   };
@@ -97,9 +116,22 @@ const Appointments = () => {
     const formattedTime = moment(newTime).format("HH:mm");
     const formattedDate = moment(newDate).format("DD-MM-YYYY");
 
+    // Check doctor availability before proceeding
+    const isAvailable = await checkDoctorAvailability(
+      selectedAppointment.doctorId, // Assuming `doctorId` exists in appointment data
+      formattedDate,
+      formattedTime
+    );
+    console.log(isAvailable)
+
+    if (!isAvailable) {
+      message.error("The doctor is not available at the selected time.");
+      return;
+    }
+
     try {
       const res = await axios.put(
-        `http://localhost:7000/api/v1/user/reschedule-appointment`,
+        "http://localhost:7000/api/v1/user/reschedule-appointment",
         {
           appointmentId: selectedAppointment._id,
           newDate: formattedDate,
@@ -178,88 +210,7 @@ const Appointments = () => {
               type="button"
               onClick={() => handleDelete(record._id)}
             >
-              <span className="button__text">Delete</span>
-              <span className="button__icon">
-                <svg
-                  className="svg"
-                  height="512"
-                  viewBox="0 0 512 512"
-                  width="512"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320"
-                    style={{
-                      fill: "none",
-                      stroke: "#fff",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: "32px",
-                    }}
-                  ></path>
-                  <line
-                    style={{
-                      stroke: "#fff",
-                      strokeLinecap: "round",
-                      strokeMiterlimit: "10",
-                      strokeWidth: "32px",
-                    }}
-                    x1="80"
-                    x2="432"
-                    y1="112"
-                    y2="112"
-                  ></line>
-                  <path
-                    d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40"
-                    style={{
-                      fill: "none",
-                      stroke: "#fff",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: "32px",
-                    }}
-                  ></path>
-                  <line
-                    style={{
-                      fill: "none",
-                      stroke: "#fff",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: "32px",
-                    }}
-                    x1="256"
-                    x2="256"
-                    y1="176"
-                    y2="400"
-                  ></line>
-                  <line
-                    style={{
-                      fill: "none",
-                      stroke: "#fff",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: "32px",
-                    }}
-                    x1="184"
-                    x2="192"
-                    y1="176"
-                    y2="400"
-                  ></line>
-                  <line
-                    style={{
-                      fill: "none",
-                      stroke: "#fff",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: "32px",
-                    }}
-                    x1="328"
-                    x2="320"
-                    y1="176"
-                    y2="400"
-                  ></line>
-                </svg>
-              </span>
+              Delete
             </button>
           );
         } else {
@@ -283,34 +234,34 @@ const Appointments = () => {
 
   return (
     <Layout>
-      <div style={{ height: 'calc(100vh - 100px)' }}>
-      <h1>Appointments List</h1>
-      <Table columns={columns} dataSource={appointments} />
+      <div style={{ height: "calc(100vh - 100px)" }}>
+        <h1>Appointments List</h1>
+        <Table columns={columns} dataSource={appointments} />
 
-      {/* Modal for rescheduling appointment */}
-      <Modal
-        title="Reschedule Appointment"
-        visible={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
-        <div>
-          <label>New Date: </label>
-          <Input
-            type="date"
-            value={newDate}
-            onChange={(e) => setNewDate(e.target.value)}
-          />
-        </div>
-        <div style={{ marginTop: 10 }}>
-          <label>New Time: </label>
-          <TimePicker
-            format="HH:mm"
-            value={newTime}
-            onChange={handleTimeChange}
-          />
-        </div>
-      </Modal>
+        {/* Modal for rescheduling appointment */}
+        <Modal
+          title="Reschedule Appointment"
+          visible={isModalVisible}
+          onOk={handleModalOk}
+          onCancel={handleModalCancel}
+        >
+          <div>
+            <label>New Date: </label>
+            <Input
+              type="date"
+              value={newDate}
+              onChange={(e) => setNewDate(e.target.value)}
+            />
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <label>New Time: </label>
+            <TimePicker
+              format="HH:mm"
+              value={newTime}
+              onChange={handleTimeChange}
+            />
+          </div>
+        </Modal>
       </div>
     </Layout>
   );
