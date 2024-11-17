@@ -39,7 +39,7 @@ const BookingPage = () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
-        `http://localhost:7000/api/v1/user/booking-availbility`,
+        `http://localhost:7000/api/v1/user/booking-availability`,
         { doctorId: params.doctorId, date, time },
         {
           headers: {
@@ -86,8 +86,10 @@ const BookingPage = () => {
           },
         }
       );
+      console.log(res.data)
       dispatch(hideLoading());
       if (res.data.success) {
+        console.log(res.data)
         message.success(res.data.message);
       }
     } catch (error) {

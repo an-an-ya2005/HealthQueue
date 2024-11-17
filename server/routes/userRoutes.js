@@ -53,7 +53,8 @@ router.get("/user-appointments", authMiddleware, userAppointmentsController);
 router.post("/cancel-appointment", authMiddleware, cancelAppointmentController);
 
 router.delete("/delete-appointment", authMiddleware, deleteAppointmentController);
-router.delete("/reschedule-appointment", authMiddleware, rescheduleAppointmentController);
+
+router.put("/reschedule-appointment", authMiddleware, rescheduleAppointmentController);
 
 
 

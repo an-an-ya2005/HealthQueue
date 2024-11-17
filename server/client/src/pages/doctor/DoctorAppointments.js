@@ -8,6 +8,7 @@ import { message, Table } from "antd";
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  // console.log(appointments)
 
   const getAppointments = async () => {
     try {

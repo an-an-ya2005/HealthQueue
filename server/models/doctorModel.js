@@ -30,13 +30,13 @@ const doctorSchema = new mongoose.Schema(
     },
     specialization: {
       type: String,
-      required: [true, "specialization is require"],
+      required: [true, "specialization is required"],
     },
     experience: {
       type: String,
       required: [true, "experience is required"],
     },
-    feesPerCunsaltation: {
+    feesPerConsultation: { // Corrected typo
       type: Number,
       required: [true, "fee is required"],
     },
@@ -45,12 +45,12 @@ const doctorSchema = new mongoose.Schema(
       default: "pending",
     },
     timings: {
-      type: Object,
-      // required: [true, "wrok timing is required"],
+      type: [String], // Changed to an array of strings
+      required: [true, "work timing is required"],
     },
   },
   { timestamps: true }
-);
+);  
 
 const doctorModel = mongoose.model("doctors", doctorSchema);
 module.exports = doctorModel;

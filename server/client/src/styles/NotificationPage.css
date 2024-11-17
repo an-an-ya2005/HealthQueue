@@ -1,0 +1,56 @@
+.notification-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 16px; /* Adjust the gap between grid items */
+}
+
+.notification-card {
+  cursor: pointer;
+  border: 1px solid #ddd; /* Optional: Add a border */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  padding: 16px; /* Optional: Add padding */
+  background-color: #fff; /* Optional: Background color */
+  transition: box-shadow 0.3s; /* Optional: Add a transition effect */
+}
+
+.notification-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+}
+
+.notification-scrollable {
+  height: 400px; /* Set a fixed height for the scrollable area */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ddd; /* Optional: Add a border */
+  padding: 10px; /* Optional: Add padding */
+  background-color: #f9f9f9; /* Optional: Background color */
+  border-radius: 8px; /* Optional: Rounded corners */
+  display: flex; /* Enable flexbox */
+  flex-wrap: wrap; /* Allow items to wrap to the next line */
+  gap: 16px; /* Space between items */
+}
+
+.notification-card {
+  flex: 1 1 calc(30% - 16px); /* Adjust the width of each card */
+  min-width: 200px; /* Minimum width for each card */
+  cursor: pointer;
+  border: 1px solid #ddd; /* Optional: Add a border */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  padding: 16px; /* Optional: Add padding */
+  background-color: #fff; /* Optional: Background color */
+  transition: box-shadow 0.3s; /* Optional: Add a transition effect */
+}
+
+.notification-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow on hover */
+  
+}
+
+.notification-card .card-header p{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 25px;
+}
+
+.notification-card:hover{
+  /* font-family: 'Times New Roman', Times, serif; */
+  color: rgb(68, 68, 253);
+}

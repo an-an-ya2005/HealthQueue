@@ -1,0 +1,61 @@
+.not-found-container {
+  display: flex;
+  justify-content: center; /* Center align the items */
+  align-items: center; /* Center align items vertically */
+  height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+.text-container {
+  flex: 1; /* Allow text to take available space */
+  margin-right: 0; /* Ensure no margin on the right */
+}
+
+.doctor-image {
+  width: 250px; /* Set a width for the image */
+  height: auto; /* Maintain aspect ratio */
+  margin-left: -10px; /* Optional: Use negative margin to pull the image closer */
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.not-found-title {
+  font-size: 10rem;
+  color: #ff6f61;
+  margin: 0;
+  text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.7);
+  animation: bounce 1s infinite alternate;
+}
+
+.not-found-message {
+  font-size: 1.8rem;
+  margin: 20px 0;
+  color: #ffffff;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
+}
+
+.home-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 15px 30px;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background-color: #ff6f61;
+  border-radius: 30px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.home-link:hover {
+  background-color: #ff9a9e;
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
