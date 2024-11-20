@@ -17,7 +17,8 @@ const DoctorList = ({ doctor, email }) => {
     navigate(`/doctor/book-appointment/${doctor._id}`);
   };
 
-  console.log(doctor.feesPerConsultation)
+  
+
 
   return (
     <div style={{justifyContent:'center'}}>

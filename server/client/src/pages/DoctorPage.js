@@ -14,6 +14,9 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [specializationQuery, setSpecializationQuery] = useState("");
+  console.log(`Timings of doctor: ${doctors?.[0]?.timings?.[0]} - ${doctors?.[0]?.timings?.[1]}`);
+
+  
 
   const getAllDoctors = async () => {
     try {
@@ -150,12 +153,24 @@ const HomePage = () => {
             value={specializationQuery}
             onChange={handleSpecializationChange}
           />
-          <Row style={{justifyContent:'center'}}>
+          <Row 
+            style={{ 
+              justifyContent: 'center', 
+              overflowY: 'auto', 
+              maxHeight: '400px', 
+              flexWrap: 'wrap', 
+              display: 'flex' 
+            }}
+          >
             {loading ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <div
                   className="card m-2"
-                  style={{ cursor: "pointer" , justifyContent:'center'}}
+                  style={{
+                    cursor: 'pointer',
+                    justifyContent: 'center',
+                    flex: '1 0 48%', // This makes the card take 48% of the width of the row, so two cards fit per row
+                  }}
                   key={index}
                 >
                   <div
@@ -183,7 +198,17 @@ const HomePage = () => {
             ) : (
               searchDoctorsBySpecialization(specializationQuery).length > 0 ? (
                 searchDoctorsBySpecialization(specializationQuery).map((doctor) => (
-                  <DoctorList key={doctor.id} doctor={doctor} email={currentDoctorEmail} />
+                  <div 
+                    className="card m-2" 
+                    style={{
+                      cursor: 'pointer', 
+                      justifyContent: 'center', 
+                      flex: '1 0 48%' // Adjust width to 48% for two cards per row
+                    }}
+                    key={doctor.id}
+                  >
+                    <DoctorList doctor={doctor} email={currentDoctorEmail} />
+                  </div>
                 ))
               ) : (
                 <p>No doctors found for this specialization.</p>

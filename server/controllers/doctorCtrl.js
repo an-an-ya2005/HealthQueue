@@ -58,8 +58,10 @@ const updateProfileController = async (req, res) => {
 
 // Get single doctor by doctorId
 const getDoctorByIdController = async (req, res) => {
+  console.log(req.body)
   try {
     const doctor = await doctorModel.findById(req.body.doctorId);
+    console.log(doctor)
     if (!doctor) {
       return res.status(404).send({
         success: false,

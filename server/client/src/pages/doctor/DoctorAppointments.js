@@ -8,6 +8,7 @@ import "../../styles/DoctorAppointment.css"; // Import the CSS file
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  console.log(appointments)
 
   const getAppointments = async () => {
     try {
@@ -51,8 +52,12 @@ const DoctorAppointments = () => {
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "_id",
+      title: "Name",
+      dataIndex: "name",
+      render: (text, record) => {
+        const { userInfo } = record; // Destructure doctorInfo from the record
+        return userInfo ? userInfo.name : ''; // Return the name from doctorInfo
+      },
     },
     {
       title: "Date & Time",
@@ -76,13 +81,13 @@ const DoctorAppointments = () => {
           {record.status === "pending" && (
             <div className="action-buttons">
               <button
-                className="btn btn-success"
+                className="btn-success"
                 onClick={() => handleStatus(record, "approved")}
               >
                 Approved
               </button>
               <button
-                className="btn btn-danger ms-2"
+                className="btn-danger"
                 onClick={() => handleStatus(record, "reject")}
               >
                 Reject

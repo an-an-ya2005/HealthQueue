@@ -7,6 +7,7 @@ import { Badge, message, Modal } from "antd";
 
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
+  // console.log(user)
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -95,7 +96,7 @@ const Layout = ({ children }) => {
             </Badge>
             <li className="profile-menu">
               
-                <Link to="/profile">{user?.name}</Link>
+                <Link to="/Profile/:id">{user?.name}</Link>
               
             </li>
           </div>

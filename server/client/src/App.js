@@ -16,6 +16,7 @@ import Appointments from "./pages/Appointments";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import NotFound from "./pages/PageNotFound/NotFound";
 import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
 function App() {
   const { loading } = useSelector((state) => state.alerts);
   return (
@@ -126,6 +127,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/Profile/:id"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />

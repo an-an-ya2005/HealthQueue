@@ -14,6 +14,7 @@ const {
   deleteAppointmentController,
   rescheduleAppointmentController,
   checkDoctorLoginStatusController,
+  deleteNotification,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -41,6 +42,9 @@ router.post("/get-all-notification", authMiddleware, getAllNotificationControlle
 
 // Delete All Notifications || POST
 router.post("/delete-all-notification", authMiddleware, deleteAllNotificationController);
+
+// Delete One Notification
+router.delete("/delete-One-Notification", authMiddleware, deleteNotification);
 
 // Get All Doctors || GET
 router.get("/getAllDoctors", authMiddleware, getAllDoctorsController);

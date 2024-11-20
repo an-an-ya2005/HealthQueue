@@ -30,8 +30,9 @@
 }
 
 .notification-card {
-  flex: 1 1 calc(30% - 16px); /* Adjust the width of each card */
-  min-width: 200px; /* Minimum width for each card */
+  flex: content; /* Adjust the width of each card */
+  width: 360px; /* Minimum width for each card */
+  height: 140px;
   cursor: pointer;
   border: 1px solid #ddd; /* Optional: Add a border */
   border-radius: 8px; /* Optional: Add rounded corners */

@@ -76,7 +76,7 @@ const loginController = async (req, res) => {
       return res.status(200).send({ message: "Invalid Email or Password", success: false });
     }
     // console.log(process.env)
-    console.log("JWT_SECRET:", process.env.JWT_SECRET);
+    // console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
@@ -101,7 +101,7 @@ const authController = async (req, res) => {
     user.password = undefined;
     res.status(200).send({ success: true, data: user });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send({
       message: "Authentication Error",
       success: false,
@@ -116,6 +116,7 @@ const applyDoctorController = async (req, res) => {
   console.log(req.body)
   try {
     const { firstName, lastName, phone, email, specialization, experience, timings, userId } = req.body;
+    console.log(timings)
 
     // Validate input
     if (!firstName || !lastName || !phone || !email || !specialization || !experience || !timings) {
@@ -161,34 +162,78 @@ const applyDoctorController = async (req, res) => {
 };
 
 // Get All Notifications Controller
+// const getAllNotificationController = async (req, res) => {
+//   try {
+//     const user = await userModel.findById(req.body.userId);
+
+//     if (!user) {
+//       return res.status(404).send({
+//         success: false,
+//         message: "User  not found",
+//       });
+//     }
+
+//     // Move notifications to seen notifications
+//     user.seennotification.push(...user.notifcation);
+//     user.notifcation = [];
+
+//     // Update the timestamp for marking notifications as read
+//     user.notificationReadAt = new Date();
+//     await user.save();
+
+//     res.status(200).send({
+//       success: true,
+//       message: "All notifications marked as read",
+//       data: {
+//         user,
+//         notificationReadAt: user.notificationReadAt,
+//       },
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({
+//       success: false,
+//       message: "Error in Notification Controller",
+//       error,
+//     });
+//   }
+// };
+
 const getAllNotificationController = async (req, res) => {
   try {
-    const user = await userModel.findById(req.body.userId);
-    user.seennotification.push(...user.notifcation);
-    user.notifcation = [];
-    await user.save();
-    console.log(user)
-    res.status(200).send({
+    // Find the user by their ID (assuming `req.userId` contains the logged-in user's ID)
+    const user = await userModel.findById(req.userId); 
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Sort notifications by createdAt to show them in a proper order (descending)
+    const sortedNotifications = user.notifcation.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const sortedSeenNotifications = user.seennotification.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // Send both notifications and seen notifications to the frontend
+    res.status(200).json({
       success: true,
-      message: "All notifications marked as read",
-      data: user,
+      notifications: sortedNotifications,
+      seenNotifications: sortedSeenNotifications,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      message: "Error in Notification Controller",
-      success: false,
-      error,
-    });
+    console.error(error);
+    res.status(500).json({ message: "Server error, please try again later" });
   }
 };
+
+
+
+
 
 // Delete All Notifications Controller
 const deleteAllNotificationController = async (req, res) => {
   try {
     const user = await userModel.findById(req.body.userId);
-    user.notification = [];
-    user.seenNotification = [];
+    user.notifcation = [];
+    user.seennotification = [];
     await user.save();
     res.status(200).send({
       success: true,
@@ -205,10 +250,79 @@ const deleteAllNotificationController = async (req, res) => {
   }
 };
 
+// Delete notification by one
+const deleteNotification = async (req, res) => {
+  try {
+    const { userId, notificationId } = req.body;
+
+    // Log the incoming request body for debugging
+    console.log("Delete Notification Request:", req.body);
+
+    // Validate userId and notificationId
+    if (!userId || !notificationId) {
+      return res.status(400).send({ success: false, message: "User  ID and Notification ID are required." });
+    }
+
+    // Find the user
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({ success: false, message: "User  not found." });
+    }
+
+    // Ensure both arrays exist before accessing them
+    const { notifcation = [], seennotification = [] } = user;
+
+    // Helper function to safely compare notification IDs
+    const isValidNotificationId = (notif, notificationId) => {
+      return notif && notif._id && notif._id.toString() === notificationId;
+    };
+
+    // Check if the notification is in the 'notifcation' (unread) array
+    const notificationIndex = notifcation.findIndex((notif) => isValidNotificationId(notif, notificationId));
+
+    if (notificationIndex !== -1) {
+      // Remove the notification from 'notifcation' (unread)
+      notifcation.splice(notificationIndex, 1);
+      console.log(`Notification deleted from 'notifcation': ${notificationId}`);
+    } else {
+      // Check if the notification is in the 'seennotification' (read) array
+      const seenNotificationIndex = seennotification.findIndex((notif) => isValidNotificationId(notif, notificationId));
+
+      if (seenNotificationIndex !== -1) {
+        // Remove the notification from 'seennotification' (read)
+        seennotification.splice(seenNotificationIndex, 1);
+        console.log(`Notification deleted from 'seennotification': ${notificationId}`);
+      } else {
+        return res.status(404).send({ success: false, message: "Notification not found." });
+      }
+    }
+
+    // Save the updated user data
+    await user.save();
+    return res.status(200).send({ success: true, message: "Notification deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    return res.status(500).send({
+      success: false,
+      message: "Failed to delete notification.",
+      error: error.message || error,
+    });
+  }
+};
+
+// export default deleteNotification; // Ensure to export the function if needed
+
 // Get All Doctors Controller
 const getAllDoctorsController = async (req, res) => {
+  // console.log(req.body)
+  // console.log(res.body)
   try {
     const doctors = await doctorModel.find({ status: "approved" });
+    doctors.forEach((doctor) => {
+      console.log(`Doctor: ${doctor.firstName} ${doctor.lastName}`);
+      console.log(`Timings: ${doctor.timings[1]} - ${doctor.timings[0]}`);
+    });
+    
     res.status(200).send({
       success: true,
       message: "Doctor List Fetched Successfully",
@@ -216,7 +330,7 @@ const getAllDoctorsController = async (req, res) => {
     });
     // console.log(doctors)
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send({
       success: false,
       error,
@@ -240,7 +354,7 @@ const bookAppointmentController = async (req, res) => {
 
     // Format the date and time
     const formattedDate = moment(date, "DD-MM-YYYY").toISOString();
-    const formattedTime = moment(time, "HH:mm").toISOString();
+    const formattedTime = moment(time, "hh:mm A").toISOString();
 
     // Check for existing appointments
     const fromTime = moment(formattedTime).subtract(1, "hours").toISOString(); // 1 hour before
@@ -297,7 +411,7 @@ const bookingAvailabilityController = async (req, res) => {
   try {
     // Parse date and time from the request body
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString(); // Ensure correct format
-    const time = moment(req.body.time, "HH:mm"); // Parse the time for comparison
+    const time = moment(req.body.time, "hh:mm A"); // Parse the time for comparison
     const fromTime = time.clone().subtract(1, "hours").toISOString(); // 1 hour before
     const toTime = time.clone().add(1, "hours").toISOString(); // 1 hour after
 
@@ -379,57 +493,72 @@ const rescheduleAppointmentController = async (req, res) => {
       return res.status(400).send({ success: false, message: "Appointment ID, new date, and new time are required." });
     }
 
+    // Parse and validate date and time using moment
+    const formattedDate = moment(newDate, "DD-MM-YYYY", true).isValid()
+      ? moment(newDate, "DD-MM-YYYY").toISOString()
+      : null;
+    const formattedTime = moment(newTime, "hh:mm A", true).isValid()
+      ? moment(newTime, "hh:mm A").toISOString()
+      : null;
+
+    if (!formattedDate || !formattedTime) {
+      return res.status(400).send({ success: false, message: "Invalid date or time format provided." });
+    }
+
     // Find the appointment
     const appointment = await appointmentModel.findById(appointmentId);
     if (!appointment) {
-      return res.status(404).send({ success: false, message: "Appointment not found" });
+      return res.status(404).send({ success: false, message: "Appointment not found." });
     }
 
-    // Update the date and time
-    appointment.date = moment(newDate, "DD-MM-YYYY").toISOString(); // Ensure correct format
-    appointment.time = moment(newTime, "HH:mm").toISOString(); // Ensure correct format
-    appointment.status = "pending"; // Reset status to pending
-    // console.log(newDate, newTime)
-
-    // Save the updated appointment
+    // Update the appointment
+    appointment.date = formattedDate;
+    appointment.time = formattedTime;
+    appointment.status = "pending";
     await appointment.save();
 
-    // Notify the doctor about the rescheduling
-    const doctorUser  = await userModel.findById(appointment.doctorInfo.userId); // Use appointment's doctor info
-    // console.log(doctorUser)
-    if (!doctorUser ) {
-      return res.status(404).send({ success: false, message: "Doctor not found" });
+    // Notify the doctor
+    const doctorUser = await userModel.findById(appointment.doctorInfo.userId);
+    if (!doctorUser) {
+      return res.status(404).send({ success: false, message: "Doctor not found." });
     }
-    
-    // If the doctorUser  exists, proceed to push notification
-    // console.log(newDate, newTime)
-    doctorUser .notifcation.push({
+
+    // Format date and time for notification
+    const notificationDate = moment(formattedDate).format("DD-MM-YYYY");
+    const notificationTime = moment(formattedTime).format("hh:mm A");
+    const notificationMessage = `Appointment with ${appointment.userInfo.name} has been rescheduled to ${notificationDate} at ${notificationTime}.`;
+
+    // Push notification to the doctor
+    doctorUser.notifcation.push({
       type: "appointment-rescheduled",
-      message: `Appointment with ${appointment.userInfo.name} has been rescheduled to ${moment(newDate).format("DD-MM-YYYY")} at ${moment(newTime).format("HH:mm")}.`,
+      message: notificationMessage,
       onClickPath: "/doctor/appointments",
     });
-    
-    await doctorUser .save();
+    await doctorUser.save();
 
     res.status(200).send({
       success: true,
-      message: "Appointment rescheduled successfully",
+      message: "Appointment rescheduled successfully.",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send({
       success: false,
-      message: "Error in rescheduling appointment",
-      error,
+      message: "Error in rescheduling appointment.",
+      error: error.message,
     });
   }
 };
 
+
+
 // User Appointments Controller
 const userAppointmentsController = async (req, res) => {
+  // console.log(req.body)
   try {
     const appointments = await appointmentModel.find({
       userId: req.body.userId });
+      // console.log(appointments)
     res.status(200).send({
       success: true,
       message: "User  Appointments Fetched Successfully",
@@ -459,5 +588,6 @@ module.exports = {
   cancelAppointmentController,
   deleteAppointmentController,
   rescheduleAppointmentController,
-  checkDoctorLoginStatusController
+  checkDoctorLoginStatusController,
+  deleteNotification,
 };

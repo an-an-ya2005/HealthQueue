@@ -15,12 +15,10 @@ const BookingPage = () => {
   const [doctors, setDoctors] = useState([]);
   const [date, setDate] = useState("");
   const [time, setTime] = useState();
-  const [isAvailable, setIsAvailable] = useState(false);
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-  
-  // login user data
+
+  // Fetch doctor data
   const getUserData = async () => {
     try {
       const res = await axios.post(
@@ -40,61 +38,35 @@ const BookingPage = () => {
     }
   };
 
-  // ============ validate if time is within doctor's available range
-  const isValidTime = (selectedTime) => {
-    if (!doctors.timings) return false;
-
-    const [startTime, endTime] = doctors.timings;
-    const selectedTimeMoment = moment(selectedTime, "HH:mm");
-    const startTimeMoment = moment(startTime, "HH:mm");
-    const endTimeMoment = moment(endTime, "HH:mm");
-
-    return selectedTimeMoment.isBetween(startTimeMoment, endTimeMoment, null, "[)");
-  };
-
-  // ============ handle availability
-  const handleAvailability = async () => {
-    if (!isValidTime(time)) {
-      message.error("The selected time is outside the doctor's available hours.");
-      return;
-    }
-
-    try {
-      dispatch(showLoading());
-      const res = await axios.post(
-        `http://localhost:7000/api/v1/user/booking-availability`,
-        { doctorId: params.doctorId, date, time },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (res.data.success) {
-        setIsAvailable(true);
-        message.success(res.data.message);
-      } else {
-        message.error(res.data.message);
-      }
-    } catch (error) {
-      dispatch(hideLoading());
-      console.log(error);
-    }
-  };
-
-  // =============== booking func
+  // Handle booking
   const handleBooking = async () => {
-    if (!date || !time) {
-      return alert("Date & Time are required.");
-    }
-
-    if (!isValidTime(time)) {
-      message.error("The selected time is outside the doctor's available hours.");
-      return;
-    }
-
     try {
+      // Validate date and time
+      const selectedDateTime = moment(`${date} ${time}`, "DD-MM-YYYY hh:mm A");
+      const currentDateTime = moment();
+
+      // Check if the selected date is in the past
+      if (selectedDateTime.isBefore(currentDateTime)) {
+        message.error("You cannot book an appointment for a past date or time.");
+        return;
+      }
+
+      // Validate doctor's available timings
+      if (doctors.timings) {
+        const [startTime, endTime] = doctors.timings.map((t) =>
+          moment(t, "hh:mm A")
+        );
+        const selectedTime = moment(time, "hh:mm A");
+
+        if (!selectedTime.isBetween(startTime, endTime, null, "[)")) {
+          message.error(
+            `Please select a time within the doctor's available hours: ${doctors.timings[0]} - ${doctors.timings[1]}.`
+          );
+          return;
+        }
+      }
+
+      // Proceed with booking if validation passes
       dispatch(showLoading());
       const res = await axios.post(
         `http://localhost:7000/api/v1/user/book-appointment`,
@@ -115,23 +87,20 @@ const BookingPage = () => {
       dispatch(hideLoading());
       if (res.data.success) {
         message.success(res.data.message);
-        navigate('/appointments');
+        navigate("/appointments");
+      } else {
+        message.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
-      console.log(error);
+      console.error("Booking error:", error);
+      message.error("An error occurred while booking the appointment. Please try again.");
     }
   };
 
   useEffect(() => {
     getUserData();
-    //eslint-disable-next-line
   }, []);
-
-  // console.log(doctors.feesPerCunsaltation)
-  // console.log(doctors.
-    // feesPerConsultation
-    // )
 
   return (
     <Layout>
@@ -142,42 +111,33 @@ const BookingPage = () => {
             {doctors && (
               <div>
                 <h4>
-                  Dr.{doctors.firstName} {doctors.lastName}
+                  Dr. {doctors.firstName} {doctors.lastName}
                 </h4>
                 <h4>Fees: {doctors.feesPerConsultation}/-</h4>
                 <h4>
                   Timings: {doctors.timings && doctors.timings[0]} -{" "}
                   {doctors.timings && doctors.timings[1]}
                 </h4>
-                <div style={{ justifyContent: 'center' }}>
+                <div style={{ justifyContent: "center" }}>
                   <DatePicker
-                    aria-required="true"
                     className="picker m-2"
                     format="DD-MM-YYYY"
                     onChange={(value) => {
                       setDate(moment(value).format("DD-MM-YYYY"));
                     }}
+                    disabledDate={(current) => current && current.isBefore(moment(), 'day')}
                   />
+
                   <TimePicker
-                    aria-required="true"
-                    format="HH:mm"
+                    format="hh:mm A"
                     className="picker mt-3"
                     onChange={(value) => {
-                      setTime(moment(value).format("HH:mm"));
+                      setTime(moment(value).format("hh:mm A"));
                     }}
                   />
                 </div>
 
-                <button
-                  className="btn btn-primary mt-2"
-                  onClick={handleAvailability}
-                >
-                  Check Availability
-                </button>
-                <button
-                  className="btn btn-dark mt-2"
-                  onClick={handleBooking}
-                >
+                <button className="btn btn-dark mt-2" onClick={handleBooking}>
                   Book Now
                 </button>
               </div>

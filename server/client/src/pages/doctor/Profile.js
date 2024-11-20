@@ -24,8 +24,8 @@ const Profile = () => {
           ...values,
           userId: user._id,
           timings: [
-            moment(values.timings[0]).format("HH:mm"),
-            moment(values.timings[1]).format("HH:mm"),
+            moment(values.timings[1]).format("hh:mm A"),
+            moment(values.timings[0]).format("hh:mm A"),
           ],
         },
         {
@@ -84,8 +84,8 @@ const Profile = () => {
           initialValues={{
             ...doctor,
             timings: [
-              moment(doctor.timings[0], "HH:mm"),
-              moment(doctor.timings[1], "HH:mm"),
+              moment(doctor.timings[0], "hh:mm A"),
+              moment(doctor.timings[1], "hh:mm A"),
             ],
           }}
         >
@@ -172,16 +172,16 @@ const Profile = () => {
             <Col xs={24} md={24} lg={8}>
               <Form.Item
                 label="Fees Per Cunsaltation"
-                name="feesPerCunsaltation"
+                name="feesPerConsultation"
                 required
                 rules={[{ required: true }]}
               >
-                <Input type="text" placeholder="your contact no" />
+                <Input type="text" placeholder="Fees Per Cunsaltation" />
               </Form.Item>
             </Col>
             <Col xs={24} md={24} lg={8}>
               <Form.Item label="Timings" name="timings" required>
-                <TimePicker.RangePicker format="HH:mm" />
+                <TimePicker.RangePicker format="hh:mm A" />
               </Form.Item>
             </Col>
             <Col xs={24} md={24} lg={8}></Col>

@@ -14,6 +14,7 @@
 
 const mongoose = require("mongoose");
 const ConnectURI = "mongodb://localhost:27017/Health";
+mongoose.set('strictQuery', true);
 const ConnectToMongo = async () => {
   try {
     await mongoose.connect(ConnectURI);

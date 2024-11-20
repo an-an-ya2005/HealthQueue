@@ -21,17 +21,22 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  notifcation: {
-    type: Array,
-    default: [],
-  },
-  seennotification: {
-    type: Array,
-    default: [],
-  },
+  notifcation: [
+    {
+      message: { type: String, required: true },
+      onClickPath: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now }, // Automatically set the current date
+    },
+  ],
+  seennotification: [
+    {
+      message: { type: String, required: true },
+      onClickPath: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now }, // Automatically set the current date
+    },
+  ],
 },
-{ timestamps: true }
-);
+{ timestamps: true });
 
 const userModel = mongoose.model("users", userSchema);
 
