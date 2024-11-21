@@ -138,70 +138,84 @@ const NotificationPage = () => {
 
   return (
     <Layout>
-      <h4 className="p-3 text-center">Notification Page</h4>
-      <Tabs>
-        {/* Unread Notifications */}
-        <Tabs.TabPane tab="Unread" key={0}>
-          <div className="d-flex justify-content-end">
-            <h4
-              className="p-2"
-              onClick={handleMarkAllRead}
-              style={{ cursor: "pointer" }}
-            >
-              Mark All Read
-            </h4>
-          </div>
-          <div className="notification-scrollable">
-            {sortNotificationsByTime(user?.notifcation || []).map((notificationMgs) => {
-              return (
-                <div
-                  key={notificationMgs._id}
-                  className="notification-card"
-                  onClick={() => handleNotificationClick(notificationMgs)}
+      <h4 className="text-center">Notification Page</h4>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "80vw",
+          height: "80vh",
+          backgroundColor:'#fff',
+          marginLeft:'120px'
+        }}
+      >
+        <div style={{ width: "80%" }}>
+          <Tabs>
+            {/* Unread Notifications */}
+            <Tabs.TabPane tab="Unread" key={0}>
+              <div className="d-flex justify-content-end">
+                <h4
+                  className="p-2"
+                  onClick={handleMarkAllRead}
+                  style={{ cursor: "pointer" }}
                 >
-                  <div className="card-header">
-                    <p>Messages for You Doctor.</p>
-                  </div>
-                  <div className="card-body">
-                    <small>{formatDate(notificationMgs.createdAt)}</small>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Tabs.TabPane>
+                  Mark All Read
+                </h4>
+              </div>
+              <div className="notification-scrollable">
+                {sortNotificationsByTime(user?.notifcation || []).map((notificationMgs) => {
+                  return (
+                    <div
+                      key={notificationMgs._id}
+                      className="notification-card"
+                      onClick={() => handleNotificationClick(notificationMgs)}
+                    >
+                      <div className="card-header">
+                        <p>Messages for You Doctor.</p>
+                      </div>
+                      <div className="card-body">
+                        <small>{formatDate(notificationMgs.createdAt)}</small>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Tabs.TabPane>
 
-        {/* Read Notifications */}
-        <Tabs.TabPane tab="Read" key={1}>
-          <div className="d-flex justify-content-end">
-            <h4
-              className="p-2 text-primary"
-              style={{ cursor: "pointer" }}
-              onClick={handleDeleteAllRead}
-            >
-              Delete All Read
-            </h4>
-          </div>
-          <div className="notification-scrollable">
-            {sortNotificationsByTime(user?.seennotification || []).map((notificationMgs) => {
-              return (
-                <div
-                  key={notificationMgs._id}
-                  className="notification-card"
-                  onClick={() => handleNotificationClick(notificationMgs)}
+            {/* Read Notifications */}
+            <Tabs.TabPane tab="Read" key={1}>
+              <div className="d-flex justify-content-end">
+                <h4
+                  className="p-2 text-primary"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleDeleteAllRead}
                 >
-                  <div className="card-header">
-                    <p>Messages for You Doctor.</p>
-                  </div>
-                  <div className="card-body">
-                    <small>{formatDate(notificationMgs.createdAt)}</small>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Tabs.TabPane>
-      </Tabs>
+                  Delete All Read
+                </h4>
+              </div>
+              <div className="notification-scrollable">
+                {sortNotificationsByTime(user?.seennotification || []).map((notificationMgs) => {
+                  return (
+                    <div
+                      key={notificationMgs._id}
+                      className="notification-card"
+                      onClick={() => handleNotificationClick(notificationMgs)}
+                    >
+                      <div className="card-header">
+                        <p>Messages for You Doctor.</p>
+                      </div>
+                      <div className="card-body">
+                        <small>{formatDate(notificationMgs.createdAt)}</small>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Tabs.TabPane>
+          </Tabs>
+        </div>
+      </div>
 
       {/* Modal for displaying full notification message */}
       <Modal

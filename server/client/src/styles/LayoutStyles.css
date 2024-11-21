@@ -76,7 +76,7 @@
 
 /* Hover effect for profile menu */
 .profile-menu:hover {
-  border-radius: 50%;
+  border-radius: 30px;
   background-color: #34495e; /* Darker background on hover */
   transform: translateY(-2px); /* Lift effect on hover */
 }

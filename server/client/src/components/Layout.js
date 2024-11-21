@@ -4,31 +4,36 @@ import { adminMenu, userMenu } from "./../Data/data";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Badge, message, Modal } from "antd";
+import ProfilePage from "../pages/ProfilePage";
 
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
-  // console.log(user)
   const location = useLocation();
   const navigate = useNavigate();
 
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
-  // Show logout confirmation modal
+  // Logout modal handlers
   const showLogoutModal = () => {
     setIsLogoutModalVisible(true);
   };
-
-  // Handle logout
   const handleLogout = () => {
     localStorage.clear();
     message.success("Logout Successfully");
     navigate("/login");
     setIsLogoutModalVisible(false);
   };
-
-  // Handle cancel logout
   const handleCancel = () => {
     setIsLogoutModalVisible(false);
+  };
+
+  // Profile modal handlers
+  const showProfileModal = () => {
+    setIsProfileModalVisible(true);
+  };
+  const handleProfileModalCancel = () => {
+    setIsProfileModalVisible(false);
   };
 
   // Doctor menu
@@ -82,22 +87,22 @@ const Layout = ({ children }) => {
                 Logout
               </a>
             </li>
-
           </ul>
           <div className="header-content">
-            <Badge
-              count={user && user.notifcation.length}
-              onClick={() => {
-                navigate("/notification");
-              }}
-              className="notification-icon"
-            >
-              <i className="fa-solid fa-bell"></i>
-            </Badge>
-            <li className="profile-menu">
-              
-                <Link to="/Profile/:id">{user?.name}</Link>
-              
+          <Badge
+            count={user?.notification?.length || 0}
+            onClick={() => {
+              navigate("/notification");
+            }}
+            className="notification-icon"
+          >
+            <i className="fa-solid fa-bell"></i>
+          </Badge>
+            <li className="profile-menu" onClick={showProfileModal}>
+              <a>
+                <i className="fa-solid fa-user"></i>
+                {user?.name}
+              </a>
             </li>
           </div>
         </nav>
@@ -118,13 +123,17 @@ const Layout = ({ children }) => {
       >
         <p>Are you sure you want to logout?</p>
       </Modal>
-      {/* Floating Search Bar */}
-  {/* <div className="search-bar">
-    <input type="text" placeholder="Search..." />
-    <button className="search-button">
-      <i className="fa-solid fa-search"></i>
-    </button>
-  </div> */}
+
+      {/* Profile Modal */}
+      <Modal
+        title="My Profile"
+        visible={isProfileModalVisible}
+        onCancel={handleProfileModalCancel}
+        footer={null}
+        centered
+      >
+        <ProfilePage/>
+      </Modal>
     </>
   );
 };

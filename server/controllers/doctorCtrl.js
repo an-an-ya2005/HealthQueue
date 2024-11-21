@@ -1,6 +1,7 @@
 const appointmentModel = require("../models/appointmentModel");
 const doctorModel = require("../models/doctorModel");
 const userModel = require("../models/userModels");
+const sendEmail = require("../utils/email");
 
 // Get doctor info by userId
 const getDoctorInfoController = async (req, res) => {
@@ -58,10 +59,10 @@ const updateProfileController = async (req, res) => {
 
 // Get single doctor by doctorId
 const getDoctorByIdController = async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   try {
     const doctor = await doctorModel.findById(req.body.doctorId);
-    console.log(doctor)
+    // console.log(doctor)
     if (!doctor) {
       return res.status(404).send({
         success: false,
@@ -129,6 +130,7 @@ const doctorAppointmentsController = async (req, res) => {
 };
 
 // Update appointment status
+// Update appointment status
 const updateStatusController = async (req, res) => {
   try {
     const { appointmentsId, status } = req.body;
@@ -137,6 +139,7 @@ const updateStatusController = async (req, res) => {
       { status },
       { new: true }
     );
+
     if (!appointment) {
       return res.status(404).send({
         success: false,
@@ -146,13 +149,67 @@ const updateStatusController = async (req, res) => {
 
     const user = await userModel.findById(appointment.userId);
     if (user) {
-      user.notification = user.notification || [];
-      user.notification.push({
+      user.notifcation = user.notifcation || [];
+      user.notifcation.push({
         type: "status-updated",
         message: `Your appointment status has been updated to: ${status}`,
         onClickPath: "/doctor-appointments",
       });
       await user.save();
+    }
+
+    const fullName = `${appointment.doctorInfo.firstName} ${appointment.doctorInfo.lastName}`;
+    const emailSubject = "Appointment Statement";
+
+    let emailBody = "";
+
+    if (status === "approved") {
+      emailBody = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; background-color: #f4f4f9; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+        <div style="text-align: center; padding: 20px;">
+          <h2 style="color: #333; font-size: 24px;">Appointment Approved</h2>
+          <p style="font-size: 16px; color: #666;">Thank you for choosing our clinic!</p>
+        </div>
+        
+        <p style="font-size: 16px; color: #333;">Dear <strong style="color: #2c3e50;">${user.name}</strong>,</p>
+        
+        <p style="font-size: 16px; color: #333;">Your appointment with <strong style="color: #2c3e50;">Dr. ${fullName} (${appointment.doctorInfo.specialization})</strong> has been successfully approved.</p>
+        
+        <p style="font-size: 16px; color: #333;"><strong style="color: #2c3e50;">Appointment Details:</strong></p>
+        
+        <ul style="list-style-type: none; padding: 0; font-size: 16px; color: #333;">
+          <li style="padding: 5px 0;">Date: <span style="font-weight: bold;">${appointment.date}</span></li>
+          <li style="padding: 5px 0;">Time: <span style="font-weight: bold;">${appointment.time}</span></li>
+        </ul>
+        
+        <p style="font-size: 16px; color: #333;">Thank you for choosing our service!</p>
+        
+        <div style="border-top: 2px solid #e0e0e0; margin-top: 20px; padding-top: 20px;">
+          <p style="font-size: 16px; color: #333;">Regards, <br><strong>Your Clinic Team</strong></p>
+        </div>
+      </div>`;
+    } else if (status === "rejected") {
+      emailBody = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; background-color: #f4f4f9; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+        <div style="text-align: center; padding: 20px;">
+          <h2 style="color: #333; font-size: 24px;">Appointment Rejected</h2>
+          <p style="font-size: 16px; color: #666;">We regret to inform you about the status of your appointment.</p>
+        </div>
+        
+        <p style="font-size: 16px; color: #333;">Dear <strong style="color: #2c3e50;">${user.name}</strong>,</p>
+        
+        <p style="font-size: 16px; color: #333;">Your appointment with <strong style="color: #2c3e50;">Dr. ${fullName} (${appointment.doctorInfo.specialization})</strong> has been rejected. We apologize for the inconvenience.</p>
+        
+        <p style="font-size: 16px; color: #333;">Please contact us for further details or to reschedule your appointment.</p>
+        
+        <div style="border-top: 2px solid #e0e0e0; margin-top: 20px; padding-top: 20px;">
+          <p style="font-size: 16px; color: #333;">Regards, <br><strong>Your Clinic Team</strong></p>
+        </div>
+      </div>`;
+    }
+
+    if (user.email) {
+      await sendEmail(user.email, emailSubject, emailBody);
     }
 
     res.status(200).send({
@@ -168,6 +225,8 @@ const updateStatusController = async (req, res) => {
     });
   }
 };
+
+
 
 module.exports = {
   getDoctorInfoController,

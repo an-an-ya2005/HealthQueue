@@ -1,0 +1,113 @@
+.profile-preview {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #ffffff; /* Clean white background */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12); /* Softer shadow */
+    width: 100%; /* Make the preview take up full width of the modal */
+    max-width: 600px; /* Ensure it doesn't get too wide */
+    margin: 0 auto; /* Center it inside the modal */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-preview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-header h3 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 3em; /* Larger title */
+    color: #000000;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.profile-header p {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.profile-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.profile-section {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+.profile-section h5 {
+    font-size: 1.25em;
+    color: #007bff;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.profile-section p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    padding: 15px 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.profile-section p:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.profile-section strong {
+    color: #007bff;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .profile-preview {
+        padding: 15px;
+        width: 100%;
+        max-width: 90%; /* Allow for responsiveness */
+    }
+
+    .profile-header h4 {
+        font-size: 1.5em; /* Smaller title on mobile */
+    }
+
+    .profile-details {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .profile-section {
+        flex: 1 1 100%; /* Full width for each section on mobile */
+    }
+
+    .profile-section h5 {
+        font-size: 1.1em;
+    }
+
+    .profile-section p {
+        font-size: 14px;
+    }
+}

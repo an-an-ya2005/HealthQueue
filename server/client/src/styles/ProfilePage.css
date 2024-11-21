@@ -1,38 +1,84 @@
+/* Profile Page Container */
 .profile-page {
-    padding: 20px;
-    background: #f4f7fc;
-    min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  /* min-height: 100vh; Full height view */
+  background: linear-gradient(135deg, #ece9e6, #ffffff); /* Subtle gradient background */
+}
+
+/* User Card Styling */
+.user-card {
+  background: #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  padding: 25px 35px;
+  width: 350px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* Add subtle hover effect */
+.user-card:hover {
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+/* User Name */
+.user-name {
+  font-size: 26px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+}
+
+/* User Email */
+.user-email {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+}
+
+/* User Role */
+.user-role {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3498db;
+  margin-bottom: 20px;
+}
+
+/* Notifications Placeholder */
+.user-notifications {
+  font-size: 14px;
+  color: #95a5a6;
+  font-style: italic;
+}
+
+/* Loading Message */
+.profile-page p {
+  font-size: 16px;
+  color: #7f8c8d;
+  text-align: center;
+}
+
+/* Add animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
   }
-  
-  .page-title {
-    text-align: center;
-    font-size: 2.5rem;
-    color: #333;
-    margin-bottom: 20px;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  .user-card {
-    background: #ffffff;
-    border: 1px solid #e3e6f0;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .user-name {
-    font-size: 1.5rem;
-    color: #1f2937;
-    margin-bottom: 10px;
-  }
-  
-  .user-email,
-  .user-role,
-  .user-notifications {
-    font-size: 1rem;
-    color: #6b7280;
-    margin-bottom: 10px;
-  }
-  
+}
+
+.user-card {
+  animation: fadeIn 0.5s ease-in-out;
+}

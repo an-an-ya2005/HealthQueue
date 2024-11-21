@@ -11,7 +11,7 @@ const Login = () => {
   const dispatch = useDispatch();
   //form handler
   const onfinishHandler = async (values) => {
-    // console.log(values)
+    console.log(values)
     try {
       dispatch(showLoading());
       const res = await axios.post(`http://localhost:7000/api/v1/user/login`, values);

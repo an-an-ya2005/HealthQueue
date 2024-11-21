@@ -196,7 +196,7 @@ const HomePage = () => {
                 </div>
               ))
             ) : (
-              searchDoctorsBySpecialization(specializationQuery).length > 0 ? (
+              searchDoctorsBySpecialization(specializationQuery).length === 1 ? (
                 searchDoctorsBySpecialization(specializationQuery).map((doctor) => (
                   <div 
                     className="card m-2" 

@@ -15,6 +15,7 @@ const {
   rescheduleAppointmentController,
   checkDoctorLoginStatusController,
   deleteNotification,
+  getUserDatabyId,
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -30,6 +31,9 @@ router.post("/register", registerController);
 
 // Auth || POST
 router.post("/getUserData", authMiddleware, authController);
+
+// Get all user data || GET
+router.get("/getUserDatabyId", authMiddleware, getUserDatabyId);
 
 //Check login statues
 router.get("/checkLoginStatus", authMiddleware, checkDoctorLoginStatusController);

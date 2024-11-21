@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const doctorModel = require("../models/doctorModel");
 const appointmentModel = require("../models/appointmentModel");
 const moment = require("moment");
+const sendEmail = require("../utils/email");
 
 // Register Controller
 const registerController = async (req, res) => {
@@ -110,6 +111,26 @@ const authController = async (req, res) => {
   }
 };
 
+
+const getUserDatabyId = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.body.userId);
+    // console.log(user)
+    if (!user) {
+      return res.status(200).send({ message: "User Not Found", success: false });
+    }
+    // user.password = undefined;
+    res.status(200).send({ success: true, data: user });
+  } catch (error) {
+    // console.log(error);
+    res.status(500).send({
+      message: "Authentication Error",
+      success: false,
+      error,
+    });
+  }
+};
+
 // Apply Doctor Controller
 const applyDoctorController = async (req, res) => {
   // console.log(res.body)
@@ -199,33 +220,41 @@ const applyDoctorController = async (req, res) => {
 //   }
 // };
 
-const getAllNotificationController = async (req, res) => {
-  try {
-    // Find the user by their ID (assuming `req.userId` contains the logged-in user's ID)
-    const user = await userModel.findById(req.userId); 
 
+const getAllNotificationController = async (req, res) => {
+  console.log(req.body)
+  try {
+    
+    // Find the user by their ID (assuming req.userId contains the logged-in user's ID)
+    const user = await userModel.findById(req.body.userId); 
+    console.log(user)
+    // console.log(user)
+    
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Sort notifications by createdAt to show them in a proper order (descending)
-    const sortedNotifications = user.notifcation.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    const sortedSeenNotifications = user.seennotification.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    user.seennotification.push(...user.notifcation);
+    user.notifcation = [];
 
-    // Send both notifications and seen notifications to the frontend
+    // Mark all notifications as read by setting a 'read' flag (assuming each notification has a 'read' field)
+    // user.notifcation.forEach(notifcation => {
+    //   notifcation.read = true;
+    // });
+
+    // Save the updated user data
+    await user.save();
+
     res.status(200).json({
       success: true,
-      notifications: sortedNotifications,
-      seenNotifications: sortedSeenNotifications,
+      message: "All notifications marked as read",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error, please try again later" });
-  }
+    res.status(500).json({ message: "Server error, please try again later" });
+  }
+
 };
-
-
-
 
 
 // Delete All Notifications Controller
@@ -342,7 +371,7 @@ const getAllDoctorsController = async (req, res) => {
 // Book Appointment Controller
 const bookAppointmentController = async (req, res) => {
   try {
-    const { date, time } = req.body;
+    const { date, time, doctorInfo, userInfo } = req.body;
 
     // Validate that date and time are provided
     if (!date || !time) {
@@ -361,43 +390,77 @@ const bookAppointmentController = async (req, res) => {
     const toTime = moment(formattedTime).add(1, "hours").toISOString(); // 1 hour after
 
     const existingAppointments = await appointmentModel.find({
-      doctorId: req.body.doctorInfo.userId,
+      doctorId: doctorInfo.userId,
       date: formattedDate,
       time: { $gte: fromTime, $lte: toTime },
     });
-    console.log(existingAppointments)
 
     // If there is already an appointment, return a message
     if (existingAppointments.length > 0) {
       return res.status(200).send({
         success: false,
-        message: "Doctor is not available at this time", // Message for not available
+        message: "Doctor is not available at this time",
       });
     }
 
-    // Create a new appointment if available
-    req.body.date = formattedDate;
-    req.body.time = formattedTime;
-    req.body.status = "pending";
-
-    const newAppointment = new appointmentModel(req.body);
+    // Create a new appointment
+    const newAppointment = new appointmentModel({
+      ...req.body,
+      date: formattedDate,
+      time: formattedTime,
+      status: "pending",
+    });
     await newAppointment.save();
 
     // Notify the doctor
-    const doctorUser  = await userModel.findById(req.body.doctorInfo.userId);
-    doctorUser .notifcation.push({
+    const doctorUser = await userModel.findById(doctorInfo.userId);
+    doctorUser.notifcation.push({
       type: "New-appointment-request",
-      message: `A new appointment request from ${req.body.userInfo.name}`,
+      message: `A new appointment request from ${userInfo.name}`,
       onClickPath: "/user/appointments",
     });
-    await doctorUser .save();
+    await doctorUser.save();
+
+    const fullName = `${doctorInfo.firstName} ${doctorInfo.lastName}`;
+
+    // Send an email to the user
+    const emailSubject = "Appointment Confirmation";
+    const emailBody = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.5; background-color: #f4f4f9; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+      <div style="text-align: center; padding: 20px;">
+        <h2 style="color: #333; font-size: 24px;">Appointment Confirmation</h2>
+        <p style="font-size: 16px; color: #666;">Thank you for choosing our clinic!</p>
+      </div>
+      
+      <p style="font-size: 16px; color: #333;">Dear <strong style="color: #2c3e50;">${userInfo.name}</strong>,</p>
+      
+      <p style="font-size: 16px; color: #333;">Your appointment with <strong style="color: #2c3e50;">Dr. ${fullName} (${doctorInfo.specialization})</strong> has been successfully booked.</p>
+      <p style="font-size: 16px; color: #333;">Status is : <strong>"Pennding"</strong> shortly your status will be updated to <strong>"Confirmed"</strong> after the doctor's confirmation.</p>
+      
+      <p style="font-size: 16px; color: #333;"><strong style="color: #2c3e50;">Appointment Details:</strong></p>
+      
+      <ul style="list-style-type: none; padding: 0; font-size: 16px; color: #333;">
+        <li style="padding: 5px 0;">Date: <span style="font-weight: bold;">${moment(formattedDate).format("DD-MM-YYYY")}</span></li>
+        <li style="padding: 5px 0;">Time: <span style="font-weight: bold;">${moment(formattedTime).format("hh:mm A")}</span></li>
+      </ul>
+      
+      <p style="font-size: 16px; color: #333;">Thank you for choosing our service!</p>
+      
+      <div style="border-top: 2px solid #e0e0e0; margin-top: 20px; padding-top: 20px;">
+        <p style="font-size: 16px; color: #333;">Regards, <br><strong>Your Clinic Team</strong></p>
+      </div>
+    </div>
+    `;
+
+    await sendEmail(userInfo.email, emailSubject, emailBody);
+    // console.log(emailBody)
 
     res.status(200).send({
       success: true,
-      message: "Appointment booked successfully",
+      message: "Appointment booked successfully, and email notification sent",
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error while booking appointment:", error);
     res.status(500).send({
       success: false,
       error,
@@ -453,6 +516,33 @@ const cancelAppointmentController = async (req, res) => {
     }
     appointment.status = "canceled";
     await appointment.save();
+
+    const userEmail = appointment.userInfo.email; // Assuming user's email is stored in userInfo
+    const emailSubject = "Your Appointment Has Been Cancelled";
+    const emailBody = `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px; line-height: 1.5;">
+    <div style="text-align: center; padding: 20px;">
+      <h2 style="color: #333; font-size: 24px;">Appointment Cancellation</h2>
+    </div>
+
+    <p style="font-size: 16px; color: #333;">Dear <strong style="color: #2c3e50;">${appointment.userInfo.name}</strong>,</p>
+    
+    <p style="font-size: 16px; color: #333;">
+      Your appointment has been cancelled.
+    </p>
+    
+    <p style="font-size: 16px; color: #333;">Please contact us if you have any questions.</p>
+    
+    <div style="border-top: 2px solid #e0e0e0; margin-top: 20px; padding-top: 20px;">
+      <p style="font-size: 16px; color: #333;">Best regards, <br><strong>Your Healthcare Team</strong></p>
+    </div>
+  </div>
+`;
+
+
+    await sendEmail(userEmail, emailSubject, emailBody);
+
+
     res.status(200).send({ success: true, message: "Appointment canceled successfully" });
   } catch (error) {
     console.log(error);
@@ -536,6 +626,31 @@ const rescheduleAppointmentController = async (req, res) => {
     });
     await doctorUser.save();
 
+    const userEmail = appointment.userInfo.email; // Assuming user's email is stored in userInfo
+    const emailSubject = "Your Appointment Has Been Rescheduled";
+    const emailBody = `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px; line-height: 1.5;">
+    <div style="text-align: center; padding: 20px;">
+      <h2 style="color: #333; font-size: 24px;">Appointment Rescheduled</h2>
+    </div>
+
+    <p style="font-size: 16px; color: #333;">Dear <strong style="color: #2c3e50;">${appointment.userInfo.name}</strong>,</p>
+    
+    <p style="font-size: 16px; color: #333;">
+      Your appointment has been rescheduled to <strong style="color: #2c3e50;">${notificationDate}</strong> at <strong style="color: #2c3e50;">${notificationTime}</strong>.
+    </p>
+    
+    <p style="font-size: 16px; color: #333;">Please contact us if you have any questions.</p>
+    
+    <div style="border-top: 2px solid #e0e0e0; margin-top: 20px; padding-top: 20px;">
+      <p style="font-size: 16px; color: #333;">Best regards, <br><strong>Your Healthcare Team</strong></p>
+    </div>
+  </div>
+`;
+
+
+    await sendEmail(userEmail, emailSubject, emailBody);
+
     res.status(200).send({
       success: true,
       message: "Appointment rescheduled successfully.",
@@ -590,4 +705,5 @@ module.exports = {
   rescheduleAppointmentController,
   checkDoctorLoginStatusController,
   deleteNotification,
+  getUserDatabyId,
 };
