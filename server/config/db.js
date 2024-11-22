@@ -13,7 +13,7 @@
 // module.exports = connectDB;
 
 const mongoose = require("mongoose");
-const ConnectURI = "mongodb://localhost:27017/Health";
+const ConnectURI = "mongodb://localhost:27017/Healthy";
 mongoose.set('strictQuery', true);
 const ConnectToMongo = async () => {
   try {

@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import "../styles/LayoutStyles.css";
 import { adminMenu, userMenu } from "./../Data/data";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch} from "react-redux";
 import { Badge, message, Modal } from "antd";
+import { setUser } from "../redux/features/userSlice";
 import ProfilePage from "../pages/ProfilePage";
 
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();  
 
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
@@ -20,6 +22,8 @@ const Layout = ({ children }) => {
   };
   const handleLogout = () => {
     localStorage.clear();
+    dispatch(setUser(null)); 
+    
     message.success("Logout Successfully");
     navigate("/login");
     setIsLogoutModalVisible(false);
@@ -81,7 +85,7 @@ const Layout = ({ children }) => {
                 </li>
               );
             })}
-            <li className="menu-item" onClick={showLogoutModal}>
+            <li className="menu-item" onClick={showLogoutModal}>                                                              
               <a>
                 <i className="fa-solid fa-right-from-bracket"></i>
                 Logout

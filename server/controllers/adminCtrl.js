@@ -66,8 +66,42 @@ const changeAccountStatusController = async (req, res) => {
   }
 };
 
+
+const toggleBlockUserController = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Find the user by ID
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Toggle the block status
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+
+    return res.status(200).send({
+      success: true,
+      message: `User has been ${user.isBlocked ? "blocked" : "unblocked"}`,
+      isBlocked: user.isBlocked,
+    });
+  } catch (error) {
+    console.error("Error toggling block status:", error);
+    return res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+      error,
+    });
+  }
+};
+
 module.exports = {
   getAllDoctorsController,
   getAllUsersController,
   changeAccountStatusController,
+  toggleBlockUserController ,
 };

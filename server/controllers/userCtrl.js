@@ -64,32 +64,57 @@ const checkDoctorLoginStatusController = async (req, res) => {
 };
 
 // Login Controller
-const loginController = async (req, res) => {
-  // console.log(req.body);
-  try {
-    const user = await userModel.findOne({ email: req.body.email });
-    // console.log(user)
-    if (!user) {
-      return res.status(200).send({ message: "User Not Found", success: false });
-    }
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) {
-      return res.status(200).send({ message: "Invalid Email or Password", success: false });
-    }
-    // console.log(process.env)
-    // console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
+
+const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if the user exists
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if the user is blocked
+    if (user.isBlocked) {
+      return res.status(403).send({
+        success: false,
+        message: "Your account has been blocked. Please contact support.",
+      });
+    }
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    // Generate a JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
-
     });
-    
-    res.status(200).send({ message: "Login Success", success: true, token });
+
+    res.status(200).send({
+      success: true,
+      message: "Login successful",
+      token,
+    });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: `Error in Login Controller: ${error.message}` });
+    console.error("Login error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
+
 
 // Auth Controller
 const authController = async (req, res) => {
