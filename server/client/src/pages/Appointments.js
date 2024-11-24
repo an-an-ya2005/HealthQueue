@@ -14,26 +14,6 @@ const Appointments = () => {
   const [newTime, setNewTime] = useState(moment()); // Initialize with current time
   const [doctors, setDoctors] = useState([]);
   const params = useParams();
-  // console.log(appointments)
-
-  // const getUserData = async () => {
-  //   try {
-  //     const res = await axios.post(
-  //       `http://localhost:7000/api/v1/doctor/getDoctorById`,
-  //       { doctorId: params.doctorId },
-  //       {
-  //         headers: {
-  //           Authorization: "Bearer " + localStorage.getItem("token"),
-  //         },
-  //       }
-  //     );
-  //     if (res.data.success) {
-  //       setDoctors(res.data.data);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   // Fetch user's appointments
   

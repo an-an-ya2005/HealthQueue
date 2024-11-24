@@ -460,7 +460,7 @@ const bookAppointmentController = async (req, res) => {
       <p style="font-size: 16px; color: #333;">Dear <strong style="color: #2c3e50;">${userInfo.name}</strong>,</p>
       
       <p style="font-size: 16px; color: #333;">Your appointment with <strong style="color: #2c3e50;">Dr. ${fullName} (${doctorInfo.specialization})</strong> has been successfully booked.</p>
-      <p style="font-size: 16px; color: #333;">Status is : <strong>"Pennding"</strong> shortly your status will be updated to <strong>"Confirmed"</strong> after the doctor's confirmation.</p>
+      <p style="font-size: 16px; color: #333;">Status is : <strong>"Pending"</strong> shortly your status will be updated to <strong>"Confirmed"</strong> after the doctor's confirmation.</p>
       
       <p style="font-size: 16px; color: #333;"><strong style="color: #2c3e50;">Appointment Details:</strong></p>
       
